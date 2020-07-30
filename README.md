@@ -1,3 +1,3 @@
-# aby-java
+# ABY Java
 
-Java wrapper for the [ABY](https://github.com/encryptogroup/ABY) framework.
+Java bindings for the [ABY](https://github.com/encryptogroup/ABY) Framework.
