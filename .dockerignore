@@ -1,0 +1,5 @@
+# Ignore everything by default. So this is a "Docker include" file.
+*
+
+!gradle.properties
+!scripts
