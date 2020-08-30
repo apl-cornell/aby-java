@@ -21,27 +21,14 @@ public class Share {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 
-  @SuppressWarnings("deprecation")
-  protected void finalize() {
-    delete();
-  }
-
   public synchronized void delete() {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        AbyJNI.delete_Share(swigCPtr);
+        throw new UnsupportedOperationException("C++ destructor does not have public access");
       }
       swigCPtr = 0;
     }
-  }
-
-  public void init(Circuit circ, long maxbitlen) {
-    AbyJNI.Share_init__SWIG_0(swigCPtr, this, Circuit.getCPtr(circ), circ, maxbitlen);
-  }
-
-  public void init(Circuit circ) {
-    AbyJNI.Share_init__SWIG_1(swigCPtr, this, Circuit.getCPtr(circ), circ);
   }
 
   public SWIGTYPE_p_std__vectorT_unsigned_int_t getWires() {
@@ -95,19 +82,6 @@ public class Share {
 
   public SharingType getShareType() {
     return SharingType.swigToEnum(AbyJNI.Share_getShareType(swigCPtr, this));
-  }
-
-  public SWIGTYPE_p_unsigned_char getClearValuePtr() {
-    long cPtr = AbyJNI.Share_getClearValuePtr(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_unsigned_char(cPtr, false);
-  }
-
-  public void getClearValueVec(SWIGTYPE_p_p_unsigned_int vec, SWIGTYPE_p_unsigned_int bitlen, SWIGTYPE_p_unsigned_int nvals) {
-    AbyJNI.Share_getClearValueVec__SWIG_0(swigCPtr, this, SWIGTYPE_p_p_unsigned_int.getCPtr(vec), SWIGTYPE_p_unsigned_int.getCPtr(bitlen), SWIGTYPE_p_unsigned_int.getCPtr(nvals));
-  }
-
-  public void getClearValueVec(SWIGTYPE_p_p_unsigned_long_long vec, SWIGTYPE_p_unsigned_int bitlen, SWIGTYPE_p_unsigned_int nvals) {
-    AbyJNI.Share_getClearValueVec__SWIG_1(swigCPtr, this, SWIGTYPE_p_p_unsigned_long_long.getCPtr(vec), SWIGTYPE_p_unsigned_int.getCPtr(bitlen), SWIGTYPE_p_unsigned_int.getCPtr(nvals));
   }
 
 }

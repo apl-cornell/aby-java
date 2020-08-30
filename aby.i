@@ -25,7 +25,7 @@
 // ABYParty::GetSharings returns a reference to a vector of pointers.
 // This is essentially impossible to use from Java, so we define a new
 // function that does the lookup for us.
-%ignore "GetSharings";
+%ignore "ABYParty::GetSharings";
 %extend ABYParty {
     Circuit* GetCircuitBuilder(e_sharing sharing) {
         return $self->GetSharings()[sharing]->GetCircuitBuildRoutine();
@@ -33,16 +33,24 @@
 };
 
 %rename("Circuit") "Circuit";
+%ignore "Circuit::~Circuit";
+%ignore "Circuit::Init";
+%ignore "Circuit::Cleanup";
+%ignore "Circuit::Reset";
+%ignore "Circuit::PutCondSwapGate";
+%rename("%(lowercamelcase)s") "create_new_share";
 
 %rename("Share") "share";
-%ignore "PutCondSwapGate";
-// %rename("ArithmeticShare", %$isclass) "arithshare";
-// %rename("BooleanShare", %$isclass) "boolshare";
+// %rename("ArithmeticShare") "arithshare";
+// %rename("BooleanShare") "boolshare";
+%ignore "share::~share";
+%ignore "share::init";
+%ignore "share::get_clear_value_ptr";
+%ignore "share::get_clear_value_vec";
 
 %rename("CircuitType") "e_circuit";
 %rename("MultiplicationTripleGenerationAlgorithm") "e_mt_gen_alg";
 %rename("Phase") "ABYPHASE";
-// %rename("PreComputationPhase") "ePreCompPhase";
 %rename("Role") "e_role";
 %rename("SharingType") "e_sharing";
 %rename("SecurityLevel") "SECURITYLEVELS";

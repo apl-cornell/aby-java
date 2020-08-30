@@ -28,10 +28,6 @@ public class AbyJNI {
   public final static native long ABYParty_getTotalGates(long jarg1, ABYParty jarg1_);
   public final static native long ABYParty_getTotalDepth(long jarg1, ABYParty jarg1_);
   public final static native long ABYParty_getCircuitBuilder(long jarg1, ABYParty jarg1_, int jarg2);
-  public final static native void delete_Circuit(long jarg1);
-  public final static native void Circuit_init(long jarg1, Circuit jarg1_);
-  public final static native void Circuit_cleanup(long jarg1, Circuit jarg1_);
-  public final static native void Circuit_reset(long jarg1, Circuit jarg1_);
   public final static native long Circuit_getShareBitLen(long jarg1, Circuit jarg1_);
   public final static native long Circuit_getMaxDepth(long jarg1, Circuit jarg1_);
   public final static native long Circuit_getLocalQueueOnLvl(long jarg1, Circuit jarg1_, long jarg2);
@@ -150,9 +146,8 @@ public class AbyJNI {
   public final static native int Circuit_getNumSplitGates(long jarg1, Circuit jarg1_);
   public final static native int Circuit_getRole(long jarg1, Circuit jarg1_);
   public final static native void Circuit_exportCircuitInBristolFormat(long jarg1, Circuit jarg1_, long jarg2, Share jarg2_, long jarg3, Share jarg3_, long jarg4, Share jarg4_, String jarg5);
-  public final static native void Share_init__SWIG_0(long jarg1, Share jarg1_, long jarg2, Circuit jarg2_, long jarg3);
-  public final static native void Share_init__SWIG_1(long jarg1, Share jarg1_, long jarg2, Circuit jarg2_);
-  public final static native void delete_Share(long jarg1);
+  public final static native long createNewShare__SWIG_0(long jarg1, long jarg2, Circuit jarg2_);
+  public final static native long createNewShare__SWIG_1(long jarg1, long jarg2, Circuit jarg2_);
   public final static native long Share_getWires(long jarg1, Share jarg1_);
   public final static native long Share_getWireId(long jarg1, Share jarg1_, long jarg2);
   public final static native long Share_getWireIdsAsShare(long jarg1, Share jarg1_, long jarg2);
@@ -166,9 +161,6 @@ public class AbyJNI {
   public final static native long Share_getNvalsOnWire(long jarg1, Share jarg1_, long jarg2);
   public final static native int Share_getCircuitType(long jarg1, Share jarg1_);
   public final static native int Share_getShareType(long jarg1, Share jarg1_);
-  public final static native long Share_getClearValuePtr(long jarg1, Share jarg1_);
-  public final static native void Share_getClearValueVec__SWIG_0(long jarg1, Share jarg1_, long jarg2, long jarg3, long jarg4);
-  public final static native void Share_getClearValueVec__SWIG_1(long jarg1, Share jarg1_, long jarg2, long jarg3, long jarg4);
   public final static native void SecurityLevel_statbits_set(long jarg1, SecurityLevel jarg1_, long jarg2);
   public final static native long SecurityLevel_statbits_get(long jarg1, SecurityLevel jarg1_);
   public final static native void SecurityLevel_symbits_set(long jarg1, SecurityLevel jarg1_, long jarg2);

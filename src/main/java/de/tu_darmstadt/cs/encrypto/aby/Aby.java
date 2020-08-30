@@ -9,4 +9,14 @@
 package de.tu_darmstadt.cs.encrypto.aby;
 
 public class Aby {
+  public static Share createNewShare(long size, Circuit circ) {
+    long cPtr = AbyJNI.createNewShare__SWIG_0(size, Circuit.getCPtr(circ), circ);
+    return (cPtr == 0) ? null : new Share(cPtr, false);
+  }
+
+  public static Share createNewShare(SWIGTYPE_p_std__vectorT_unsigned_int_t vals, Circuit circ) {
+    long cPtr = AbyJNI.createNewShare__SWIG_1(SWIGTYPE_p_std__vectorT_unsigned_int_t.getCPtr(vals), Circuit.getCPtr(circ), circ);
+    return (cPtr == 0) ? null : new Share(cPtr, false);
+  }
+
 }

@@ -21,31 +21,14 @@ public class Circuit {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 
-  @SuppressWarnings("deprecation")
-  protected void finalize() {
-    delete();
-  }
-
   public synchronized void delete() {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        AbyJNI.delete_Circuit(swigCPtr);
+        throw new UnsupportedOperationException("C++ destructor does not have public access");
       }
       swigCPtr = 0;
     }
-  }
-
-  public void init() {
-    AbyJNI.Circuit_init(swigCPtr, this);
-  }
-
-  public void cleanup() {
-    AbyJNI.Circuit_cleanup(swigCPtr, this);
-  }
-
-  public void reset() {
-    AbyJNI.Circuit_reset(swigCPtr, this);
   }
 
   public long getShareBitLen() {
