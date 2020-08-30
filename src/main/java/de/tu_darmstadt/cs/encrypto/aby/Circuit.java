@@ -39,26 +39,6 @@ public class Circuit {
     return AbyJNI.Circuit_getMaxDepth(swigCPtr, this);
   }
 
-  public SWIGTYPE_p_std__dequeT_unsigned_int_t getLocalQueueOnLvl(long lvl) {
-    return new SWIGTYPE_p_std__dequeT_unsigned_int_t(AbyJNI.Circuit_getLocalQueueOnLvl(swigCPtr, this, lvl), true);
-  }
-
-  public SWIGTYPE_p_std__dequeT_unsigned_int_t getInteractiveQueueOnLvl(long lvl) {
-    return new SWIGTYPE_p_std__dequeT_unsigned_int_t(AbyJNI.Circuit_getInteractiveQueueOnLvl(swigCPtr, this, lvl), true);
-  }
-
-  public void printInteractiveQueues() {
-    AbyJNI.Circuit_printInteractiveQueues(swigCPtr, this);
-  }
-
-  public long getNumLocalLayers() {
-    return AbyJNI.Circuit_getNumLocalLayers(swigCPtr, this);
-  }
-
-  public long getNumInteractiveLayers() {
-    return AbyJNI.Circuit_getNumInteractiveLayers(swigCPtr, this);
-  }
-
   public long getNumInputBitsForParty(Role party) {
     return AbyJNI.Circuit_getNumInputBitsForParty(swigCPtr, this, party.swigValue());
   }
@@ -67,37 +47,12 @@ public class Circuit {
     return AbyJNI.Circuit_getNumOutputBitsForParty(swigCPtr, this, party.swigValue());
   }
 
-  public SWIGTYPE_p_std__dequeT_unsigned_int_t getInputGatesForParty(Role party) {
-    return new SWIGTYPE_p_std__dequeT_unsigned_int_t(AbyJNI.Circuit_getInputGatesForParty(swigCPtr, this, party.swigValue()), true);
-  }
-
-  public SWIGTYPE_p_std__dequeT_unsigned_int_t getOutputGatesForParty(Role party) {
-    return new SWIGTYPE_p_std__dequeT_unsigned_int_t(AbyJNI.Circuit_getOutputGatesForParty(swigCPtr, this, party.swigValue()), true);
-  }
-
   public SharingType getContext() {
     return SharingType.swigToEnum(AbyJNI.Circuit_getContext(swigCPtr, this));
   }
 
   public long getNumGates() {
     return AbyJNI.Circuit_getNumGates(swigCPtr, this);
-  }
-
-  public SWIGTYPE_p_gate_specific getGateSpecificOutput(long gateid) {
-    return new SWIGTYPE_p_gate_specific(AbyJNI.Circuit_getGateSpecificOutput(swigCPtr, this, gateid), true);
-  }
-
-  public SWIGTYPE_p_unsigned_long_long getOutputGateValue(long gateid) {
-    long cPtr = AbyJNI.Circuit_getOutputGateValue__SWIG_0(swigCPtr, this, gateid);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_unsigned_long_long(cPtr, false);
-  }
-
-  public long getOutputGateValue(long gateid, SWIGTYPE_p_p_unsigned_long_long outval) {
-    return AbyJNI.Circuit_getOutputGateValue__SWIG_1(swigCPtr, this, gateid, SWIGTYPE_p_p_unsigned_long_long.getCPtr(outval));
-  }
-
-  public long getNumVals(long gateid) {
-    return AbyJNI.Circuit_getNumVals(swigCPtr, this, gateid);
   }
 
   public Share putCONSGate(java.math.BigInteger val, long bitlen) {
@@ -512,12 +467,12 @@ public class Circuit {
     return AbyJNI.Circuit_putRepeaterGate__SWIG_1(swigCPtr, this, input, nvals);
   }
 
-  public long putCombinerGate(SWIGTYPE_p_std__vectorT_unsigned_int_t input) {
-    return AbyJNI.Circuit_putCombinerGate__SWIG_2(swigCPtr, this, SWIGTYPE_p_std__vectorT_unsigned_int_t.getCPtr(input));
+  public long putCombinerGate(UInt32Vector input) {
+    return AbyJNI.Circuit_putCombinerGate__SWIG_2(swigCPtr, this, UInt32Vector.getCPtr(input), input);
   }
 
-  public long putCombineAtPosGate(SWIGTYPE_p_std__vectorT_unsigned_int_t input, long pos) {
-    return AbyJNI.Circuit_putCombineAtPosGate__SWIG_1(swigCPtr, this, SWIGTYPE_p_std__vectorT_unsigned_int_t.getCPtr(input), pos);
+  public long putCombineAtPosGate(UInt32Vector input, long pos) {
+    return AbyJNI.Circuit_putCombineAtPosGate__SWIG_1(swigCPtr, this, UInt32Vector.getCPtr(input), input, pos);
   }
 
   public long putSubsetGate(long input, SWIGTYPE_p_unsigned_int posids, long nvals_out, boolean copy_posids) {
@@ -528,16 +483,16 @@ public class Circuit {
     return AbyJNI.Circuit_putSubsetGate__SWIG_3(swigCPtr, this, input, SWIGTYPE_p_unsigned_int.getCPtr(posids), nvals_out);
   }
 
-  public long putPermutationGate(SWIGTYPE_p_std__vectorT_unsigned_int_t input, SWIGTYPE_p_unsigned_int positions) {
-    return AbyJNI.Circuit_putPermutationGate__SWIG_1(swigCPtr, this, SWIGTYPE_p_std__vectorT_unsigned_int_t.getCPtr(input), SWIGTYPE_p_unsigned_int.getCPtr(positions));
+  public long putPermutationGate(UInt32Vector input, SWIGTYPE_p_unsigned_int positions) {
+    return AbyJNI.Circuit_putPermutationGate__SWIG_1(swigCPtr, this, UInt32Vector.getCPtr(input), input, SWIGTYPE_p_unsigned_int.getCPtr(positions));
   }
 
-  public SWIGTYPE_p_std__vectorT_unsigned_int_t putSplitterGate(long input) {
-    return new SWIGTYPE_p_std__vectorT_unsigned_int_t(AbyJNI.Circuit_putSplitterGate__SWIG_1(swigCPtr, this, input), true);
+  public UInt32Vector putSplitterGate(long input) {
+    return new UInt32Vector(AbyJNI.Circuit_putSplitterGate__SWIG_1(swigCPtr, this, input), true);
   }
 
-  public SWIGTYPE_p_std__vectorT_unsigned_int_t putSplitterGate(long input, SWIGTYPE_p_std__vectorT_unsigned_int_t new_nvals) {
-    return new SWIGTYPE_p_std__vectorT_unsigned_int_t(AbyJNI.Circuit_putSplitterGate__SWIG_2(swigCPtr, this, input, SWIGTYPE_p_std__vectorT_unsigned_int_t.getCPtr(new_nvals)), true);
+  public UInt32Vector putSplitterGate(long input, UInt32Vector new_nvals) {
+    return new UInt32Vector(AbyJNI.Circuit_putSplitterGate__SWIG_2(swigCPtr, this, input, UInt32Vector.getCPtr(new_nvals), new_nvals), true);
   }
 
   public Share putOUTGate(Share parent, Role dst) {

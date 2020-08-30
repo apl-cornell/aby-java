@@ -14,8 +14,8 @@ public class Aby {
     return (cPtr == 0) ? null : new Share(cPtr, false);
   }
 
-  public static Share createNewShare(SWIGTYPE_p_std__vectorT_unsigned_int_t vals, Circuit circ) {
-    long cPtr = AbyJNI.createNewShare__SWIG_1(SWIGTYPE_p_std__vectorT_unsigned_int_t.getCPtr(vals), Circuit.getCPtr(circ), circ);
+  public static Share createNewShare(UInt32Vector vals, Circuit circ) {
+    long cPtr = AbyJNI.createNewShare__SWIG_1(UInt32Vector.getCPtr(vals), vals, Circuit.getCPtr(circ), circ);
     return (cPtr == 0) ? null : new Share(cPtr, false);
   }
 

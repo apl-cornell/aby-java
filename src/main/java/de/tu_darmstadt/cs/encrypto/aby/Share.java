@@ -31,8 +31,8 @@ public class Share {
     }
   }
 
-  public SWIGTYPE_p_std__vectorT_unsigned_int_t getWires() {
-    return new SWIGTYPE_p_std__vectorT_unsigned_int_t(AbyJNI.Share_getWires(swigCPtr, this), false);
+  public UInt32Vector getWires() {
+    return new UInt32Vector(AbyJNI.Share_getWires(swigCPtr, this), false);
   }
 
   public long getWireId(long posid) {
@@ -48,8 +48,8 @@ public class Share {
     AbyJNI.Share_setWireId(swigCPtr, this, posid, wireid);
   }
 
-  public void setWireIds(SWIGTYPE_p_std__vectorT_unsigned_int_t wires) {
-    AbyJNI.Share_setWireIds(swigCPtr, this, SWIGTYPE_p_std__vectorT_unsigned_int_t.getCPtr(wires));
+  public void setWireIds(UInt32Vector wires) {
+    AbyJNI.Share_setWireIds(swigCPtr, this, UInt32Vector.getCPtr(wires), wires);
   }
 
   public long getBitlength() {

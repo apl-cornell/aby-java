@@ -8,6 +8,7 @@
 %include "stdint.i"
 %include "std_string.i"
 %include "std_vector.i"
+%template(UInt32Vector) std::vector<uint32_t>;
 
 // Ignore everything by default then selectively include.
 %ignore "";
@@ -37,6 +38,20 @@
 %ignore "Circuit::Init";
 %ignore "Circuit::Cleanup";
 %ignore "Circuit::Reset";
+
+%ignore "Circuit::GetLocalQueueOnLvl";
+%ignore "Circuit::GetInteractiveQueueOnLvl";
+%ignore "Circuit::PrintInteractiveQueues";
+%ignore "Circuit::GetNumLocalLayers";
+%ignore "Circuit::GetNumInteractiveLayers";
+
+%ignore "Circuit::GetInputGatesForParty";
+%ignore "Circuit::GetOutputGatesForParty";
+
+%ignore "Circuit::GetGateSpecificOutput";
+%ignore "Circuit::GetOutputGateValue";
+%ignore "Circuit::GetNumVals";
+
 %ignore "Circuit::PutCondSwapGate";
 
 %rename("Share") "share";
@@ -45,7 +60,7 @@
 %ignore "share::~share";
 %ignore "share::init";
 %ignore "share::get_clear_value_ptr";
-%ignore "share::get_clear_value_vec";
+%ignore "share::get_clear_value_vec"; // TODO: we need this for SIMD
 %rename("%(lowercamelcase)s") "create_new_share";
 
 %rename("CircuitType") "e_circuit";
