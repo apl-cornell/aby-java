@@ -161,6 +161,11 @@ public class AbyJNI {
   public final static native long Share_getNvalsOnWire(long jarg1, Share jarg1_, long jarg2);
   public final static native int Share_getCircuitType(long jarg1, Share jarg1_);
   public final static native int Share_getShareType(long jarg1, Share jarg1_);
+  public final static native long ST_get();
+  public final static native long MT_get();
+  public final static native long LT_get();
+  public final static native long XLT_get();
+  public final static native long XXLT_get();
   public final static native void SecurityLevel_statbits_set(long jarg1, SecurityLevel jarg1_, long jarg2);
   public final static native long SecurityLevel_statbits_get(long jarg1, SecurityLevel jarg1_);
   public final static native void SecurityLevel_symbits_set(long jarg1, SecurityLevel jarg1_, long jarg2);

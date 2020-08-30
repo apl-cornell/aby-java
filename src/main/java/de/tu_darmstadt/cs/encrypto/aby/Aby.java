@@ -19,4 +19,29 @@ public class Aby {
     return (cPtr == 0) ? null : new Share(cPtr, false);
   }
 
+  public static SecurityLevel getST() {
+    long cPtr = AbyJNI.ST_get();
+    return (cPtr == 0) ? null : new SecurityLevel(cPtr, false);
+  }
+
+  public static SecurityLevel getMT() {
+    long cPtr = AbyJNI.MT_get();
+    return (cPtr == 0) ? null : new SecurityLevel(cPtr, false);
+  }
+
+  public static SecurityLevel getLT() {
+    long cPtr = AbyJNI.LT_get();
+    return (cPtr == 0) ? null : new SecurityLevel(cPtr, false);
+  }
+
+  public static SecurityLevel getXLT() {
+    long cPtr = AbyJNI.XLT_get();
+    return (cPtr == 0) ? null : new SecurityLevel(cPtr, false);
+  }
+
+  public static SecurityLevel getXXLT() {
+    long cPtr = AbyJNI.XXLT_get();
+    return (cPtr == 0) ? null : new SecurityLevel(cPtr, false);
+  }
+
 }

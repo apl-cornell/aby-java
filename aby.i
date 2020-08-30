@@ -53,12 +53,20 @@
 %rename("Phase") "ABYPHASE";
 %rename("Role") "e_role";
 %rename("SharingType") "e_sharing";
+
 %rename("SecurityLevel") "SECURITYLEVELS";
+%rename("%s") "ST";
+%rename("%s") "MT";
+%rename("%s") "LT";
+%rename("%s") "XLT";
+%rename("%s") "XXLT";
 
 %include "abycore/aby/abyparty.h"
 %include "abycore/ABY_utils/ABYconstants.h"
 %include "abycore/circuit/circuit.h"
 %include "abycore/circuit/share.h"
 // %include "abycore/sharing/sharing.h"
+%include "ENCRYPTO_utils/constants.h"
+%include "ENCRYPTO_utils/crypto/crypto.h"
 %include "ENCRYPTO_utils/timer.h"
 %include "ENCRYPTO_utils/typedefs.h"
