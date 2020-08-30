@@ -17,6 +17,15 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.0-M1")
 }
 
+/** Style */
+
+spotless {
+    java {
+        val abyPath = "src/main/java/$group/aby".replace(".", "/")
+        targetExclude("$abyPath/*.java")
+    }
+}
+
 /** Testing */
 
 tasks.test {
