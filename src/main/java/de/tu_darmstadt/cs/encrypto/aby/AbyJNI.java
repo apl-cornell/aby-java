@@ -161,6 +161,10 @@ public class AbyJNI {
   public final static native long Share_getNvalsOnWire(long jarg1, Share jarg1_, long jarg2);
   public final static native int Share_getCircuitType(long jarg1, Share jarg1_);
   public final static native int Share_getShareType(long jarg1, Share jarg1_);
+  public final static native short Share_getClearValue8(long jarg1, Share jarg1_);
+  public final static native int Share_getClearValue16(long jarg1, Share jarg1_);
+  public final static native long Share_getClearValue32(long jarg1, Share jarg1_);
+  public final static native java.math.BigInteger Share_getClearValue64(long jarg1, Share jarg1_);
   public final static native long ST_get();
   public final static native long MT_get();
   public final static native long LT_get();

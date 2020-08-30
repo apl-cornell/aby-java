@@ -84,4 +84,20 @@ public class Share {
     return SharingType.swigToEnum(AbyJNI.Share_getShareType(swigCPtr, this));
   }
 
+  public short getClearValue8() {
+    return AbyJNI.Share_getClearValue8(swigCPtr, this);
+  }
+
+  public int getClearValue16() {
+    return AbyJNI.Share_getClearValue16(swigCPtr, this);
+  }
+
+  public long getClearValue32() {
+    return AbyJNI.Share_getClearValue32(swigCPtr, this);
+  }
+
+  public java.math.BigInteger getClearValue64() {
+    return AbyJNI.Share_getClearValue64(swigCPtr, this);
+  }
+
 }

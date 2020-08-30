@@ -38,7 +38,6 @@
 %ignore "Circuit::Cleanup";
 %ignore "Circuit::Reset";
 %ignore "Circuit::PutCondSwapGate";
-%rename("%(lowercamelcase)s") "create_new_share";
 
 %rename("Share") "share";
 // %rename("ArithmeticShare") "arithshare";
@@ -47,6 +46,7 @@
 %ignore "share::init";
 %ignore "share::get_clear_value_ptr";
 %ignore "share::get_clear_value_vec";
+%rename("%(lowercamelcase)s") "create_new_share";
 
 %rename("CircuitType") "e_circuit";
 %rename("MultiplicationTripleGenerationAlgorithm") "e_mt_gen_alg";
@@ -65,8 +65,17 @@
 %include "abycore/ABY_utils/ABYconstants.h"
 %include "abycore/circuit/circuit.h"
 %include "abycore/circuit/share.h"
-// %include "abycore/sharing/sharing.h"
 %include "ENCRYPTO_utils/constants.h"
 %include "ENCRYPTO_utils/crypto/crypto.h"
 %include "ENCRYPTO_utils/timer.h"
 %include "ENCRYPTO_utils/typedefs.h"
+
+// Expand templates
+%rename("getClearValue8") share::get_clear_value<uint8_t>;
+%rename("getClearValue16") share::get_clear_value<uint16_t>;
+%rename("getClearValue32") share::get_clear_value<uint32_t>;
+%rename("getClearValue64") share::get_clear_value<uint64_t>;
+%template() share::get_clear_value<uint8_t>;
+%template() share::get_clear_value<uint16_t>;
+%template() share::get_clear_value<uint32_t>;
+%template() share::get_clear_value<uint64_t>;
