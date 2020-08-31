@@ -10,12 +10,13 @@ set -e
 echo "ABY Group: $ABY_GROUP"
 
 PACKAGE=$ABY_GROUP.aby
-OUTPUT_DIR=src/main/java/$(echo "$PACKAGE" | tr -s "." "/")
+CPP_OUTPUT_DIR=src/main/c
+JAVA_OUTPUT_DIR=src/main/java/$(echo "$PACKAGE" | tr -s "." "/")
 
-mkdir -p "$OUTPUT_DIR"
+mkdir -p "$CPP_OUTPUT_DIR" "$JAVA_OUTPUT_DIR"
 swig -Wall -Werror -macroerrors \
     -c++ \
     -java -package "$PACKAGE" \
     -I"$ABY_DIR/src" -I"$ABY_DIR/extern/ENCRYPTO_utils/src" \
-    -outdir "$OUTPUT_DIR" -cppext cpp \
+    -o "$CPP_OUTPUT_DIR/aby_wrap.cpp" -outdir "$JAVA_OUTPUT_DIR" \
     aby.i
