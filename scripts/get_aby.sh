@@ -18,8 +18,4 @@ git fetch --quiet --depth 1 $ABY_URL "$ABY_VERSION"
 git checkout --quiet "$ABY_VERSION"
 git reset --quiet --hard "$ABY_VERSION"
 git submodule update --init --recursive --depth 1 2> /dev/null
-
-# Remove C++ attributes since SWIG doesn't support them yet
-FILE=src/abycore/circuit/circuit.h
-echo "Removing C++ attributes in $FILE"
-sed -i.bak 's/\[\[maybe_unused\]\]//g' "$ABY_DIR/$FILE" && rm "$ABY_DIR/$FILE.bak"
+git submodule foreach --recursive git reset --quiet --hard

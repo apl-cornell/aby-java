@@ -1,0 +1,128 @@
+Submodule extern/ENCRYPTO_utils contains modified content
+diff --git i/extern/ENCRYPTO_utils/CMakeLists.txt w/extern/ENCRYPTO_utils/CMakeLists.txt
+index 3a67fe3..f24ae8b 100644
+--- i/extern/ENCRYPTO_utils/CMakeLists.txt
++++ w/extern/ENCRYPTO_utils/CMakeLists.txt
+@@ -53,19 +53,6 @@ set(SHLIB off CACHE BOOL "Relic shared library")
+ set(STLIB on CACHE BOOL "Relic static library")
+ add_subdirectory(extern/relic)
+ 
+-#looks dirty, but since the relic library is poorly exported let's treat it as an external library
+-if(CMAKE_LIBRARY_OUTPUT_DIRECTORY)
+-	set(RELIC_LIB_DIR "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/librelic_s.a")
+-else()
+-	set(RELIC_LIB_DIR "${CMAKE_CURRENT_BINARY_DIR}/extern/relic/lib/librelic_s.a")
+-endif()
+-
+-add_library(RELIC::relic STATIC IMPORTED)
+-set_target_properties(RELIC::relic PROPERTIES
+-	IMPORTED_LOCATION ${RELIC_LIB_DIR}
+-	INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/extern/relic/include;${CMAKE_CURRENT_SOURCE_DIR}/extern/relic/include/low;${CMAKE_CURRENT_BINARY_DIR}/extern/relic/include"
+-)
+-
+ add_subdirectory(src)
+ 
+ if(ENCRYPTO_UTILS_BUILD_TESTS)
+Submodule extern/relic contains modified content
+diff --git i/extern/ENCRYPTO_utils/extern/relic/src/CMakeLists.txt w/extern/ENCRYPTO_utils/extern/relic/src/CMakeLists.txt
+index 4255bc0..b033cb7 100644
+--- i/extern/ENCRYPTO_utils/extern/relic/src/CMakeLists.txt
++++ w/extern/ENCRYPTO_utils/extern/relic/src/CMakeLists.txt
+@@ -211,5 +211,20 @@ if (STLIB)
+ 	add_dependencies(${RELIC_S} arith_objs)
+ 	target_link_libraries(${RELIC_S} ${ARITH_LIBS})
+ 	link_libs(${RELIC_S})
+-	install(TARGETS ${RELIC_S} ARCHIVE DESTINATION lib)
++
++	add_library(${PROJECT_NAME}::${RELIC_S} ALIAS ${RELIC_S})
++	target_include_directories(${RELIC_S}
++		INTERFACE
++			$<INSTALL_INTERFACE:include>
++			$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
++			$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../include>
++	)
++	install(TARGETS ${RELIC_S}
++		EXPORT "${PROJECT_NAME}Targets"
++		ARCHIVE DESTINATION lib
++		INCLUDES DESTINATION include
++	)
++	export(TARGETS ${RELIC_S} NAMESPACE "${PROJECT_NAME}::" FILE "${PROJECT_NAME}Targets.cmake")
+ endif(STLIB)
++
++install(EXPORT "${PROJECT_NAME}Targets" NAMESPACE "${PROJECT_NAME}::" DESTINATION "lib/cmake/${PROJECT_NAME}")
+diff --git i/extern/ENCRYPTO_utils/src/CMakeLists.txt w/extern/ENCRYPTO_utils/src/CMakeLists.txt
+index 2e80478..afa63e2 100644
+--- i/extern/ENCRYPTO_utils/src/CMakeLists.txt
++++ w/extern/ENCRYPTO_utils/src/CMakeLists.txt
+@@ -42,7 +42,7 @@ target_link_libraries(encrypto_utils
+         GMP::GMP
+         GMP::GMPXX
+         OpenSSL::Crypto
+-        RELIC::relic
++        RELIC::relic_s
+ )
+ 
+ install(TARGETS encrypto_utils
+diff --git i/src/abycore/CMakeLists.txt w/src/abycore/CMakeLists.txt
+index d25f529..e12284f 100644
+--- i/src/abycore/CMakeLists.txt
++++ w/src/abycore/CMakeLists.txt
+@@ -32,9 +32,12 @@ target_include_directories(aby
+ # libc++.  Linking to libstdc++fs is currently required when using the
+ # std::filesystem library.
+ # cf. https://gitlab.kitware.com/cmake/cmake/issues/17834
+-target_link_libraries(aby
+-	PRIVATE stdc++fs
+-)
++
++if (NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
++    target_link_libraries(aby
++        PRIVATE stdc++fs
++    )
++endif()
+ 
+ target_link_libraries(aby
+     PUBLIC OTExtension::otextension
+diff --git i/src/abycore/circuit/circuit.h w/src/abycore/circuit/circuit.h
+index 01d67af..a01d87d 100644
+--- i/src/abycore/circuit/circuit.h
++++ w/src/abycore/circuit/circuit.h
+@@ -416,32 +416,32 @@ public:
+ 	std::vector<uint32_t> PutSplitterGate(uint32_t input, const std::vector<uint32_t>& new_nvals);
+ 
+ 	//Templates may not be virtual, hence use dummy functions
+-	template <class T> uint32_t PutINGate([[maybe_unused]] T val) {
++	template <class T> uint32_t PutINGate(T val) {
+ 		std::cout << "IN gate not implemented in super-class, stopping!" << std::endl;
+ 		return -1;
+ 	}
+ 
+-	template<class T> uint32_t PutINGate([[maybe_unused]] T val, [[maybe_unused]] e_role role) {
++	template<class T> uint32_t PutINGate(T val, e_role role) {
+ 		std::cout << "IN gate not implemented in super-class, stopping!" << std::endl;
+ 		return -1;
+ 	}
+ 
+-	template<class T> uint32_t PutSharedINGate([[maybe_unused]] T val) {
++	template<class T> uint32_t PutSharedINGate(T val) {
+ 		std::cout << "IN gate not implemented in super-class, stopping!" << std::endl;
+ 		return -1;
+ 	}
+ 
+-	template<class T> uint32_t PutSIMDINGate([[maybe_unused]]uint32_t nvals, [[maybe_unused]] T val) {
++	template<class T> uint32_t PutSIMDINGate(uint32_t nvals, T val) {
+ 		std::cout << "IN gate not implemented in super-class, stopping!" << std::endl;
+ 		return -1;
+ 	}
+ 
+-	template<class T> uint32_t PutSIMDINGate([[maybe_unused]] uint32_t nvals, [[maybe_unused]] T val, [[maybe_unused]] e_role role) {
++	template<class T> uint32_t PutSIMDINGate(uint32_t nvals, T val, e_role role) {
+ 		std::cout << "IN gate not implemented in super-class, stopping!" << std::endl;
+ 		return -1;
+ 	}
+ 
+-	template<class T> uint32_t PutSharedSIMDINGate([[maybe_unused]]uint32_t nvals, [[maybe_unused]] T val) {
++	template<class T> uint32_t PutSharedSIMDINGate(uint32_t nvals, T val) {
+ 		std::cout << "IN gate not implemented in super-class, stopping!" << std::endl;
+ 		return -1;
+ 	}
