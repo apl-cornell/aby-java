@@ -2,7 +2,8 @@
 
 set -e
 
-INSTALL_DIR=$(pwd)/ABY/build/install
+# shellcheck source=./variables.sh
+. "$(dirname "$0")"/variables.sh
 
 # TODO: remove, since these only apply to MacOS
 OPENSSL_ROOT_DIR=$(brew --prefix openssl)

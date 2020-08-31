@@ -4,9 +4,9 @@
 
 set -e
 
-HEADERS_DIR=ABY/build/install/include
+# shellcheck source=./variables.sh
+. "$(dirname "$0")"/variables.sh
 
-ABY_GROUP=$(grep abyGroup < gradle.properties | cut -d'=' -f2)
 echo "ABY Group: $ABY_GROUP"
 
 PACKAGE=$ABY_GROUP.aby

@@ -4,11 +4,13 @@
 
 set -e
 
-ABY_VERSION=$(grep abyVersion < gradle.properties | cut -d'=' -f2)
+# shellcheck source=./variables.sh
+. "$(dirname "$0")"/variables.sh
+
 echo "ABY Version: $ABY_VERSION"
 
 # Clone the ABY Git repository
-mkdir ABY && cd ABY
+mkdir -p ABY && cd ABY
 git init
 git remote add origin https://github.com/encryptogroup/ABY
 git fetch --quiet --depth 1 origin "$ABY_VERSION"
