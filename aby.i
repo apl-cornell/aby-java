@@ -89,10 +89,12 @@
 %rename("%(lowercamelcase)s") create_new_share;
 
 %rename(CircuitType) e_circuit;
+%ignore C_LAST;
 %rename(MultiplicationTripleGenerationAlgorithm) e_mt_gen_alg;
 %rename(Phase) ABYPHASE;
 %rename(Role) e_role;
 %rename(SharingType) e_sharing;
+%ignore S_LAST;
 
 %rename(SecurityLevel) SECURITYLEVELS;
 %rename("%s") ST;

@@ -13,8 +13,7 @@ public enum SharingType {
   S_YAO(1),
   S_ARITH(2),
   S_YAO_REV(3),
-  S_SPLUT(4),
-  S_LAST(5);
+  S_SPLUT(4);
 
   public final int swigValue() {
     return swigValue;

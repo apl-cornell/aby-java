@@ -10,8 +10,7 @@ package de.tu_darmstadt.cs.encrypto.aby;
 
 public enum CircuitType {
   C_BOOLEAN(0),
-  C_ARITHMETIC(1),
-  C_LAST(2);
+  C_ARITHMETIC(1);
 
   public final int swigValue() {
     return swigValue;
