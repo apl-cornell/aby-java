@@ -52,7 +52,32 @@
 %ignore Circuit::GetOutputGateValue;
 %ignore Circuit::GetNumVals;
 
+%ignore Circuit::PutCallbackGate;
 %ignore Circuit::PutCondSwapGate;
+%ignore Circuit::PutConstantGate;
+%ignore Circuit::PutTruthTableGate;
+%ignore Circuit::PutTruthTableMultiOutputGate;
+
+// There are many functions for inputting values into ABY, but we are always
+// inputting bits at the end of the day. To reduce confusion, only keep the
+// largest input method (64 bit inputs).
+%ignore Circuit::PutCONSGate;
+%ignore Circuit::PutINGate;
+%ignore Circuit::PutSharedINGate;
+%ignore Circuit::PutAssertGate;
+%rename("%(lowercamelcase)s") Circuit::PutCONSGate(UGATE_T, uint32_t);
+%rename("%(lowercamelcase)s") Circuit::PutINGate(uint64_t, uint32_t, e_role);
+%rename("%(lowercamelcase)s") Circuit::PutSharedINGate(uint64_t, uint32_t);
+%rename("%(lowercamelcase)s") Circuit::PutAssertGate(uint64_t, uint32_t);
+
+// Ignore SIMD stuff for now
+%rename("$ignore", regextarget=1, fullname=1) "Circuit::.*SIMD";
+%ignore Circuit::PutCombinerGate;
+%ignore Circuit::PutSplitterGate;
+%ignore Circuit::PutSubsetGate;
+%ignore Circuit::PutCombineAtPosGate;
+%ignore Circuit::PutPermutationGate;
+
 
 %rename(Share) share;
 // %rename(ArithmeticShare) arithshare;
@@ -85,7 +110,11 @@
 %include "ENCRYPTO_utils/timer.h"
 %include "ENCRYPTO_utils/typedefs.h"
 
-// Expand templates
+// Expand templates.
+//
+// Note: these have to be placed after the imports unlike the renames, which
+// have to be placed before. Also, we have to undo the renaming we did above,
+// otherwise the %template directive runs into naming problems.
 %rename(getClearValue8) share::get_clear_value<uint8_t>;
 %rename(getClearValue16) share::get_clear_value<uint16_t>;
 %rename(getClearValue32) share::get_clear_value<uint32_t>;

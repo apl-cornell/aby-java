@@ -56,80 +56,12 @@ public class Circuit {
   }
 
   public Share putCONSGate(java.math.BigInteger val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putCONSGate__SWIG_0(swigCPtr, this, val, bitlen);
+    long cPtr = AbyJNI.Circuit_putCONSGate(swigCPtr, this, val, bitlen);
     return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putCONSGate(SWIGTYPE_p_unsigned_int val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putCONSGate__SWIG_1(swigCPtr, this, SWIGTYPE_p_unsigned_int.getCPtr(val), bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putCONSGate(SWIGTYPE_p_unsigned_char val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putCONSGate__SWIG_2(swigCPtr, this, SWIGTYPE_p_unsigned_char.getCPtr(val), bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSIMDCONSGate(long nvals, java.math.BigInteger val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putSIMDCONSGate__SWIG_0(swigCPtr, this, nvals, val, bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSIMDCONSGate(long nvals, SWIGTYPE_p_unsigned_int val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putSIMDCONSGate__SWIG_1(swigCPtr, this, nvals, SWIGTYPE_p_unsigned_int.getCPtr(val), bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSIMDCONSGate(long nvals, SWIGTYPE_p_unsigned_char val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putSIMDCONSGate__SWIG_2(swigCPtr, this, nvals, SWIGTYPE_p_unsigned_char.getCPtr(val), bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public long putConstantGate(java.math.BigInteger val, long nvals) {
-    return AbyJNI.Circuit_putConstantGate__SWIG_0(swigCPtr, this, val, nvals);
-  }
-
-  public long putConstantGate(java.math.BigInteger val) {
-    return AbyJNI.Circuit_putConstantGate__SWIG_1(swigCPtr, this, val);
   }
 
   public Share putINGate(java.math.BigInteger val, long bitlen, Role role) {
-    long cPtr = AbyJNI.Circuit_putINGate__SWIG_0(swigCPtr, this, val, bitlen, role.swigValue());
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putINGate(long val, long bitlen, Role role) {
-    long cPtr = AbyJNI.Circuit_putINGate__SWIG_1(swigCPtr, this, val, bitlen, role.swigValue());
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putINGate(int val, long bitlen, Role role) {
-    long cPtr = AbyJNI.Circuit_putINGate__SWIG_2(swigCPtr, this, val, bitlen, role.swigValue());
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putINGate(short val, long bitlen, Role role) {
-    long cPtr = AbyJNI.Circuit_putINGate__SWIG_3(swigCPtr, this, val, bitlen, role.swigValue());
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putINGate(SWIGTYPE_p_unsigned_long_long val, long bitlen, Role role) {
-    long cPtr = AbyJNI.Circuit_putINGate__SWIG_4(swigCPtr, this, SWIGTYPE_p_unsigned_long_long.getCPtr(val), bitlen, role.swigValue());
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putINGate(SWIGTYPE_p_unsigned_int val, long bitlen, Role role) {
-    long cPtr = AbyJNI.Circuit_putINGate__SWIG_5(swigCPtr, this, SWIGTYPE_p_unsigned_int.getCPtr(val), bitlen, role.swigValue());
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putINGate(SWIGTYPE_p_unsigned_short val, long bitlen, Role role) {
-    long cPtr = AbyJNI.Circuit_putINGate__SWIG_6(swigCPtr, this, SWIGTYPE_p_unsigned_short.getCPtr(val), bitlen, role.swigValue());
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putINGate(SWIGTYPE_p_unsigned_char val, long bitlen, Role role) {
-    long cPtr = AbyJNI.Circuit_putINGate__SWIG_7(swigCPtr, this, SWIGTYPE_p_unsigned_char.getCPtr(val), bitlen, role.swigValue());
+    long cPtr = AbyJNI.Circuit_putINGate(swigCPtr, this, val, bitlen, role.swigValue());
     return (cPtr == 0) ? null : new Share(cPtr, false);
   }
 
@@ -138,128 +70,8 @@ public class Circuit {
     return (cPtr == 0) ? null : new Share(cPtr, false);
   }
 
-  public Share putSIMDINGate(long nvals, java.math.BigInteger val, long bitlen, Role role) {
-    long cPtr = AbyJNI.Circuit_putSIMDINGate__SWIG_0(swigCPtr, this, nvals, val, bitlen, role.swigValue());
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSIMDINGate(long nvals, long val, long bitlen, Role role) {
-    long cPtr = AbyJNI.Circuit_putSIMDINGate__SWIG_1(swigCPtr, this, nvals, val, bitlen, role.swigValue());
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSIMDINGate(long nvals, int val, long bitlen, Role role) {
-    long cPtr = AbyJNI.Circuit_putSIMDINGate__SWIG_2(swigCPtr, this, nvals, val, bitlen, role.swigValue());
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSIMDINGate(long nvals, short val, long bitlen, Role role) {
-    long cPtr = AbyJNI.Circuit_putSIMDINGate__SWIG_3(swigCPtr, this, nvals, val, bitlen, role.swigValue());
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSIMDINGate(long nvals, SWIGTYPE_p_unsigned_long_long val, long bitlen, Role role) {
-    long cPtr = AbyJNI.Circuit_putSIMDINGate__SWIG_4(swigCPtr, this, nvals, SWIGTYPE_p_unsigned_long_long.getCPtr(val), bitlen, role.swigValue());
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSIMDINGate(long nvals, SWIGTYPE_p_unsigned_int val, long bitlen, Role role) {
-    long cPtr = AbyJNI.Circuit_putSIMDINGate__SWIG_5(swigCPtr, this, nvals, SWIGTYPE_p_unsigned_int.getCPtr(val), bitlen, role.swigValue());
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSIMDINGate(long nvals, SWIGTYPE_p_unsigned_short val, long bitlen, Role role) {
-    long cPtr = AbyJNI.Circuit_putSIMDINGate__SWIG_6(swigCPtr, this, nvals, SWIGTYPE_p_unsigned_short.getCPtr(val), bitlen, role.swigValue());
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSIMDINGate(long nvals, SWIGTYPE_p_unsigned_char val, long bitlen, Role role) {
-    long cPtr = AbyJNI.Circuit_putSIMDINGate__SWIG_7(swigCPtr, this, nvals, SWIGTYPE_p_unsigned_char.getCPtr(val), bitlen, role.swigValue());
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putDummySIMDINGate(long nvals, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putDummySIMDINGate(swigCPtr, this, nvals, bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
   public Share putSharedINGate(java.math.BigInteger val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putSharedINGate__SWIG_0(swigCPtr, this, val, bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSharedINGate(long val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putSharedINGate__SWIG_1(swigCPtr, this, val, bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSharedINGate(int val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putSharedINGate__SWIG_2(swigCPtr, this, val, bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSharedINGate(short val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putSharedINGate__SWIG_3(swigCPtr, this, val, bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSharedINGate(SWIGTYPE_p_unsigned_long_long val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putSharedINGate__SWIG_4(swigCPtr, this, SWIGTYPE_p_unsigned_long_long.getCPtr(val), bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSharedINGate(SWIGTYPE_p_unsigned_int val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putSharedINGate__SWIG_5(swigCPtr, this, SWIGTYPE_p_unsigned_int.getCPtr(val), bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSharedINGate(SWIGTYPE_p_unsigned_short val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putSharedINGate__SWIG_6(swigCPtr, this, SWIGTYPE_p_unsigned_short.getCPtr(val), bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSharedINGate(SWIGTYPE_p_unsigned_char val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putSharedINGate__SWIG_7(swigCPtr, this, SWIGTYPE_p_unsigned_char.getCPtr(val), bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSharedSIMDINGate(long nvals, java.math.BigInteger val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putSharedSIMDINGate__SWIG_0(swigCPtr, this, nvals, val, bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSharedSIMDINGate(long nvals, long val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putSharedSIMDINGate__SWIG_1(swigCPtr, this, nvals, val, bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSharedSIMDINGate(long nvals, int val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putSharedSIMDINGate__SWIG_2(swigCPtr, this, nvals, val, bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSharedSIMDINGate(long nvals, short val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putSharedSIMDINGate__SWIG_3(swigCPtr, this, nvals, val, bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSharedSIMDINGate(long nvals, SWIGTYPE_p_unsigned_long_long val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putSharedSIMDINGate__SWIG_4(swigCPtr, this, nvals, SWIGTYPE_p_unsigned_long_long.getCPtr(val), bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSharedSIMDINGate(long nvals, SWIGTYPE_p_unsigned_int val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putSharedSIMDINGate__SWIG_5(swigCPtr, this, nvals, SWIGTYPE_p_unsigned_int.getCPtr(val), bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSharedSIMDINGate(long nvals, SWIGTYPE_p_unsigned_short val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putSharedSIMDINGate__SWIG_6(swigCPtr, this, nvals, SWIGTYPE_p_unsigned_short.getCPtr(val), bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSharedSIMDINGate(long nvals, SWIGTYPE_p_unsigned_char val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putSharedSIMDINGate__SWIG_7(swigCPtr, this, nvals, SWIGTYPE_p_unsigned_char.getCPtr(val), bitlen);
+    long cPtr = AbyJNI.Circuit_putSharedINGate(swigCPtr, this, val, bitlen);
     return (cPtr == 0) ? null : new Share(cPtr, false);
   }
 
@@ -343,98 +155,8 @@ public class Circuit {
     return (cPtr == 0) ? null : new Share(cPtr, false);
   }
 
-  public Share putCallbackGate(Share in, long rounds, SWIGTYPE_p_f_p_GATE_p_void__void callback, SWIGTYPE_p_void infos, long nvals) {
-    long cPtr = AbyJNI.Circuit_putCallbackGate(swigCPtr, this, Share.getCPtr(in), in, rounds, SWIGTYPE_p_f_p_GATE_p_void__void.getCPtr(callback), SWIGTYPE_p_void.getCPtr(infos), nvals);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putTruthTableGate(Share in, SWIGTYPE_p_unsigned_long_long ttable) {
-    long cPtr = AbyJNI.Circuit_putTruthTableGate(swigCPtr, this, Share.getCPtr(in), in, SWIGTYPE_p_unsigned_long_long.getCPtr(ttable));
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putTruthTableMultiOutputGate(Share in, long out_bits, SWIGTYPE_p_unsigned_long_long ttable) {
-    long cPtr = AbyJNI.Circuit_putTruthTableMultiOutputGate(swigCPtr, this, Share.getCPtr(in), in, out_bits, SWIGTYPE_p_unsigned_long_long.getCPtr(ttable));
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
   public Share putPrintValueGate(Share in, String helpstr) {
     long cPtr = AbyJNI.Circuit_putPrintValueGate(swigCPtr, this, Share.getCPtr(in), in, helpstr);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putAssertGate(Share in, SWIGTYPE_p_unsigned_long_long assert_val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putAssertGate__SWIG_0(swigCPtr, this, Share.getCPtr(in), in, SWIGTYPE_p_unsigned_long_long.getCPtr(assert_val), bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putAssertGate(Share in, SWIGTYPE_p_unsigned_int assert_val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putAssertGate__SWIG_1(swigCPtr, this, Share.getCPtr(in), in, SWIGTYPE_p_unsigned_int.getCPtr(assert_val), bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putAssertGate(Share in, SWIGTYPE_p_unsigned_short assert_val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putAssertGate__SWIG_2(swigCPtr, this, Share.getCPtr(in), in, SWIGTYPE_p_unsigned_short.getCPtr(assert_val), bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putAssertGate(Share in, SWIGTYPE_p_unsigned_char assert_val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putAssertGate__SWIG_3(swigCPtr, this, Share.getCPtr(in), in, SWIGTYPE_p_unsigned_char.getCPtr(assert_val), bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putAssertGate(Share in, java.math.BigInteger assert_val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putAssertGate__SWIG_4(swigCPtr, this, Share.getCPtr(in), in, assert_val, bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putAssertGate(Share in, long assert_val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putAssertGate__SWIG_5(swigCPtr, this, Share.getCPtr(in), in, assert_val, bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putAssertGate(Share in, int assert_val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putAssertGate__SWIG_6(swigCPtr, this, Share.getCPtr(in), in, assert_val, bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putAssertGate(Share in, short assert_val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putAssertGate__SWIG_7(swigCPtr, this, Share.getCPtr(in), in, assert_val, bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSIMDAssertGate(Share in, long nvals, SWIGTYPE_p_unsigned_long_long assert_val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putSIMDAssertGate__SWIG_0(swigCPtr, this, Share.getCPtr(in), in, nvals, SWIGTYPE_p_unsigned_long_long.getCPtr(assert_val), bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSIMDAssertGate(Share in, long nvals, SWIGTYPE_p_unsigned_int assert_val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putSIMDAssertGate__SWIG_1(swigCPtr, this, Share.getCPtr(in), in, nvals, SWIGTYPE_p_unsigned_int.getCPtr(assert_val), bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSIMDAssertGate(Share in, long nvals, SWIGTYPE_p_unsigned_short assert_val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putSIMDAssertGate__SWIG_2(swigCPtr, this, Share.getCPtr(in), in, nvals, SWIGTYPE_p_unsigned_short.getCPtr(assert_val), bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSIMDAssertGate(Share in, long nvals, SWIGTYPE_p_unsigned_char assert_val, long bitlen) {
-    long cPtr = AbyJNI.Circuit_putSIMDAssertGate__SWIG_3(swigCPtr, this, Share.getCPtr(in), in, nvals, SWIGTYPE_p_unsigned_char.getCPtr(assert_val), bitlen);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putCombinerGate(Share input) {
-    long cPtr = AbyJNI.Circuit_putCombinerGate__SWIG_0(swigCPtr, this, Share.getCPtr(input), input);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putCombinerGate(Share ina, Share inb) {
-    long cPtr = AbyJNI.Circuit_putCombinerGate__SWIG_1(swigCPtr, this, Share.getCPtr(ina), ina, Share.getCPtr(inb), inb);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSplitterGate(Share input) {
-    long cPtr = AbyJNI.Circuit_putSplitterGate__SWIG_0(swigCPtr, this, Share.getCPtr(input), input);
     return (cPtr == 0) ? null : new Share(cPtr, false);
   }
 
@@ -443,56 +165,8 @@ public class Circuit {
     return (cPtr == 0) ? null : new Share(cPtr, false);
   }
 
-  public Share putSubsetGate(Share input, SWIGTYPE_p_unsigned_int posids, long nvals_out, boolean copy_posids) {
-    long cPtr = AbyJNI.Circuit_putSubsetGate__SWIG_0(swigCPtr, this, Share.getCPtr(input), input, SWIGTYPE_p_unsigned_int.getCPtr(posids), nvals_out, copy_posids);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putSubsetGate(Share input, SWIGTYPE_p_unsigned_int posids, long nvals_out) {
-    long cPtr = AbyJNI.Circuit_putSubsetGate__SWIG_1(swigCPtr, this, Share.getCPtr(input), input, SWIGTYPE_p_unsigned_int.getCPtr(posids), nvals_out);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putCombineAtPosGate(Share input, long pos) {
-    long cPtr = AbyJNI.Circuit_putCombineAtPosGate__SWIG_0(swigCPtr, this, Share.getCPtr(input), input, pos);
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
-  public Share putPermutationGate(Share input, SWIGTYPE_p_unsigned_int positions) {
-    long cPtr = AbyJNI.Circuit_putPermutationGate__SWIG_0(swigCPtr, this, Share.getCPtr(input), input, SWIGTYPE_p_unsigned_int.getCPtr(positions));
-    return (cPtr == 0) ? null : new Share(cPtr, false);
-  }
-
   public long putRepeaterGate(long input, long nvals) {
     return AbyJNI.Circuit_putRepeaterGate__SWIG_1(swigCPtr, this, input, nvals);
-  }
-
-  public long putCombinerGate(UInt32Vector input) {
-    return AbyJNI.Circuit_putCombinerGate__SWIG_2(swigCPtr, this, UInt32Vector.getCPtr(input), input);
-  }
-
-  public long putCombineAtPosGate(UInt32Vector input, long pos) {
-    return AbyJNI.Circuit_putCombineAtPosGate__SWIG_1(swigCPtr, this, UInt32Vector.getCPtr(input), input, pos);
-  }
-
-  public long putSubsetGate(long input, SWIGTYPE_p_unsigned_int posids, long nvals_out, boolean copy_posids) {
-    return AbyJNI.Circuit_putSubsetGate__SWIG_2(swigCPtr, this, input, SWIGTYPE_p_unsigned_int.getCPtr(posids), nvals_out, copy_posids);
-  }
-
-  public long putSubsetGate(long input, SWIGTYPE_p_unsigned_int posids, long nvals_out) {
-    return AbyJNI.Circuit_putSubsetGate__SWIG_3(swigCPtr, this, input, SWIGTYPE_p_unsigned_int.getCPtr(posids), nvals_out);
-  }
-
-  public long putPermutationGate(UInt32Vector input, SWIGTYPE_p_unsigned_int positions) {
-    return AbyJNI.Circuit_putPermutationGate__SWIG_1(swigCPtr, this, UInt32Vector.getCPtr(input), input, SWIGTYPE_p_unsigned_int.getCPtr(positions));
-  }
-
-  public UInt32Vector putSplitterGate(long input) {
-    return new UInt32Vector(AbyJNI.Circuit_putSplitterGate__SWIG_1(swigCPtr, this, input), true);
-  }
-
-  public UInt32Vector putSplitterGate(long input, UInt32Vector new_nvals) {
-    return new UInt32Vector(AbyJNI.Circuit_putSplitterGate__SWIG_2(swigCPtr, this, input, UInt32Vector.getCPtr(new_nvals), new_nvals), true);
   }
 
   public Share putOUTGate(Share parent, Role dst) {
