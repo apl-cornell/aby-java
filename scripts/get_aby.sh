@@ -10,9 +10,14 @@ set -e
 echo "ABY Version: $ABY_VERSION"
 
 # Clone the ABY Git repository
-mkdir -p ABY && cd ABY
+mkdir "$ABY_DIR"
+cd "$ABY_DIR"
 git init
 git remote add origin https://github.com/encryptogroup/ABY
 git fetch --quiet --depth 1 origin "$ABY_VERSION"
 git checkout --quiet "$ABY_VERSION"
 git submodule update --init --recursive --depth 1 2> /dev/null
+
+# Remove C++ attributes since SWIG doesn't support them yet
+FILE=$ABY_DIR/src/abycore/circuit/circuit.h
+sed -i.bak 's/\[\[maybe_unused\]\]//g' "$FILE" && rm "$FILE.bak"

@@ -9,7 +9,7 @@ set -e
 OPENSSL_ROOT_DIR=$(brew --prefix openssl)
 export OPENSSL_ROOT_DIR
 
-cd ABY
+cd "$ABY_DIR"
 cmake -B build
 cmake --build build
 cmake --install build --prefix "$INSTALL_DIR"
