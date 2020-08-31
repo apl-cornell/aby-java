@@ -103,6 +103,13 @@
 %rename("%s") XLT;
 %rename("%s") XXLT;
 
+%{
+#include "abycore/aby/abyparty.h"
+#include "abycore/circuit/circuit.h"
+#include "abycore/circuit/share.h"
+#include "abycore/sharing/sharing.h"
+%}
+
 %include "abycore/aby/abyparty.h"
 %include "abycore/ABY_utils/ABYconstants.h"
 %include "abycore/circuit/circuit.h"
