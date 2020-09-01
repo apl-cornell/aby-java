@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.concurrent.*;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.SocketUtils;
@@ -13,11 +14,18 @@ import org.springframework.util.SocketUtils;
 class AbyTest {
   private static String address;
   private static int port;
+  private static ExecutorService executorService;
 
   @BeforeAll
   static void initialize() throws UnknownHostException {
     address = InetAddress.getByName("localhost").getHostAddress();
     port = SocketUtils.findAvailableTcpPort();
+    executorService = Executors.newCachedThreadPool();
+  }
+
+  @AfterAll
+  static void shutdown() {
+    executorService.shutdown();
   }
 
   @Test
@@ -40,13 +48,11 @@ class AbyTest {
   /** Asserts that the given single output circuit produces the expected result. */
   private void testCircuit(
       CircuitBuilder circuitBuilder, SharingType sharingType, int bitLength, int expectedResult) {
-    final ExecutorService pool = Executors.newFixedThreadPool(2);
-
     // Run the code of each party in a separate thread.
     final Future<BigInteger> serverFuture =
-        pool.submit(runCircuitAs(Role.SERVER, circuitBuilder, sharingType, bitLength));
+        executorService.submit(runCircuitAs(Role.SERVER, circuitBuilder, sharingType, bitLength));
     final Future<BigInteger> clientFuture =
-        pool.submit(runCircuitAs(Role.CLIENT, circuitBuilder, sharingType, bitLength));
+        executorService.submit(runCircuitAs(Role.CLIENT, circuitBuilder, sharingType, bitLength));
 
     // Retrieve each party's result.
     final BigInteger serverResult;
@@ -60,8 +66,6 @@ class AbyTest {
 
     assertEquals(expectedResult, serverResult.intValue(), "Wrong output for server");
     assertEquals(expectedResult, clientResult.intValue(), "Wrong output for client");
-
-    pool.shutdown();
   }
 
   /** Executes the given single output circuit as the given role and returns the result. */
