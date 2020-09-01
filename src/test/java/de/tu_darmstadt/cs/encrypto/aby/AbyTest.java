@@ -9,6 +9,8 @@ import java.util.concurrent.*;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.util.SocketUtils;
 
 class AbyTest {
@@ -37,12 +39,13 @@ class AbyTest {
     server.delete();
   }
 
-  @Test
-  void constantGate() {
+  @ParameterizedTest
+  @EnumSource
+  void constantGate(SharingType sharingType) {
     final int value = 42;
     final CircuitBuilder builder =
         (circuit, bitLength) -> circuit.putCONSGate(BigInteger.valueOf(value), bitLength);
-    testCircuit(builder, SharingType.S_YAO, 6, value);
+    testCircuit(builder, sharingType, 6, value);
   }
 
   /** Asserts that the given single output circuit produces the expected result. */
