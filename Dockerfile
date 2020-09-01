@@ -9,12 +9,25 @@ RUN apk add --no-cache \
   git \
   gmp-dev \
   libressl-dev \
-  make
+  make \
+  swig
 
-# Download ABY
+# Download ABY source code
 COPY gradle.properties .
-COPY scripts/get_aby.sh scripts/
+COPY scripts/variables.sh scripts/get_aby.sh scripts/
 RUN scripts/get_aby.sh
 
-# Build ABY
-RUN cd ABY && mkdir build && cd build && cmake .. && make
+# Apply our patch to ABY sources
+COPY ABY.patch .
+COPY scripts/patch_aby.sh scripts/
+RUN scripts/patch_aby.sh
+
+# Generate the Java interface
+COPY aby.i .
+COPY scripts/generate_java_interface.sh scripts/
+RUN scripts/generate_java_interface.sh
+
+# Build for Linux
+COPY CMakeLists.txt .
+COPY scripts/build_java_wrapper.sh scripts/
+# RUN scripts/build_java_wrapper.sh

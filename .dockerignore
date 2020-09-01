@@ -3,3 +3,7 @@
 
 !gradle.properties
 !scripts
+!ABY.patch
+
+!aby.i
+!CMakeLists.txt
