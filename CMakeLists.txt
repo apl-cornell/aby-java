@@ -12,8 +12,18 @@ if(NOT CMAKE_ARCHIVE_OUTPUT_DIRECTORY)
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
 endif()
 
-add_subdirectory(ABY)
 find_package(JNI REQUIRED)
+
+# Link dependencies statically to generate a self contained binary.
+set(Boost_USE_STATIC_LIBS ON)
+set(OPENSSL_USE_STATIC_LIBS ON)
+if(WIN32)
+    list(INSERT CMAKE_FIND_LIBRARY_SUFFIXES 0 .lib .a)
+else()
+    set(CMAKE_FIND_LIBRARY_SUFFIXES .a)
+endif()
+
+add_subdirectory(ABY)
 
 add_library(abyjava SHARED
     src/main/cpp/aby_wrap.cpp
