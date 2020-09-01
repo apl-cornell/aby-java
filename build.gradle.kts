@@ -1,5 +1,9 @@
 plugins {
     `java-library`
+
+    // Style checking
+    id("com.diffplug.spotless") version "5.1.0"
+
     jacoco
 }
 
@@ -9,6 +13,17 @@ val abyVersion: String by project
 group = abyGroup
 
 version = abyVersion.substring(0..6)
+
+repositories {
+    jcenter()
+}
+
+/** Java Version */
+
+tasks.withType<JavaCompile> {
+    sourceCompatibility = "11"
+    targetCompatibility = "11"
+}
 
 dependencies {
     implementation("org.scijava:native-lib-loader:2.3.4")
@@ -31,6 +46,7 @@ spotless {
     java {
         val abyPath = "src/main/java/$group/aby".replace(".", "/")
         targetExclude("$abyPath/*.java")
+        googleJavaFormat()
     }
 }
 
