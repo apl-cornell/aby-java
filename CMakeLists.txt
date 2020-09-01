@@ -15,9 +15,8 @@ endif()
 add_subdirectory(ABY)
 find_package(JNI REQUIRED)
 
-# add_library(abyjava SHARED aby_wrap.cpp)
 add_library(abyjava SHARED
-    src/main/c/aby_wrap.cpp
+    src/main/cpp/aby_wrap.cpp
 )
 
 target_include_directories(abyjava

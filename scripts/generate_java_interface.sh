@@ -10,7 +10,7 @@ set -e
 echo "ABY Group: $ABY_GROUP"
 
 PACKAGE=$ABY_GROUP.aby
-CPP_OUTPUT_DIR=src/main/c
+CPP_OUTPUT_DIR=src/main/cpp
 JAVA_OUTPUT_DIR=src/main/java/$(echo "$PACKAGE" | tr -s "." "/")
 
 mkdir -p "$CPP_OUTPUT_DIR" "$JAVA_OUTPUT_DIR"
