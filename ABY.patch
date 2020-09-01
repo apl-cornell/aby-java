@@ -24,6 +24,94 @@ index 3a67fe3..f24ae8b 100644
  
  if(ENCRYPTO_UTILS_BUILD_TESTS)
 Submodule extern/relic contains modified content
+diff --git i/extern/ENCRYPTO_utils/extern/relic/bench/bench_bn.c w/extern/ENCRYPTO_utils/extern/relic/bench/bench_bn.c
+index 447f46e..9f135af 100644
+--- i/extern/ENCRYPTO_utils/extern/relic/bench/bench_bn.c
++++ w/extern/ENCRYPTO_utils/extern/relic/bench/bench_bn.c
+@@ -51,7 +51,7 @@ static void memory(void) {
+ 		bn_new(a[i]);
+ 		bn_clean(a[i]);
+ 	}
+-	BENCH_SMALL("bn_init", bn_init(a[i], RLC_BN_DIGS));
++	BENCH_SMALL("relic_bn_init", relic_bn_init(a[i], RLC_BN_DIGS));
+ 	for (int i = 0; i < BENCH; i++) {
+ 		bn_free(a[i]);
+ 	}
+diff --git i/extern/ENCRYPTO_utils/extern/relic/include/relic_bn.h w/extern/ENCRYPTO_utils/extern/relic/include/relic_bn.h
+index 8f9855b..d1f17ef 100644
+--- i/extern/ENCRYPTO_utils/extern/relic/include/relic_bn.h
++++ w/extern/ENCRYPTO_utils/extern/relic/include/relic_bn.h
+@@ -144,16 +144,16 @@ typedef bn_st *bn_t;
+ 	if ((A) == NULL) {														\
+ 		THROW(ERR_NO_MEMORY);												\
+ 	}																		\
+-	bn_init(A, RLC_BN_SIZE);													\
++	relic_bn_init(A, RLC_BN_SIZE);													\
+ 
+ #elif ALLOC == AUTO
+ #define bn_new(A)															\
+-	bn_init(A, RLC_BN_SIZE);													\
++	relic_bn_init(A, RLC_BN_SIZE);													\
+ 
+ #elif ALLOC == STACK
+ #define bn_new(A)															\
+ 	A = (bn_t)alloca(sizeof(bn_st));										\
+-	bn_init(A, RLC_BN_SIZE);													\
++	relic_bn_init(A, RLC_BN_SIZE);													\
+ 
+ #endif
+ 
+@@ -173,16 +173,16 @@ typedef bn_st *bn_t;
+ 	if (A == NULL) {														\
+ 		THROW(ERR_NO_MEMORY);												\
+ 	}																		\
+-	bn_init(A, D);															\
++	relic_bn_init(A, D);															\
+ 
+ #elif ALLOC == AUTO
+ #define bn_new_size(A, D)													\
+-	bn_init(A, D);															\
++	relic_bn_init(A, D);															\
+ 
+ #elif ALLOC == STACK
+ #define bn_new_size(A, D)													\
+ 	A = (bn_t)alloca(sizeof(bn_st));										\
+-	bn_init(A, D);															\
++	relic_bn_init(A, D);															\
+ 
+ #endif
+ 
+@@ -384,7 +384,7 @@ typedef bn_st *bn_t;
+  * @throw ERR_PRECISION		- if the required precision cannot be represented
+  * 							by the library.
+  */
+-void bn_init(bn_t a, int digits);
++void relic_bn_init(bn_t a, int digits);
+ 
+ /**
+  * Cleans a multiple precision integer.
+diff --git i/extern/ENCRYPTO_utils/extern/relic/include/relic_label.h w/extern/ENCRYPTO_utils/extern/relic/include/relic_label.h
+index 2d37c2a..a9f60dc 100644
+--- i/extern/ENCRYPTO_utils/extern/relic/include/relic_label.h
++++ w/extern/ENCRYPTO_utils/extern/relic/include/relic_label.h
+@@ -164,7 +164,7 @@
+ #define bn_st	PREFIX(bn_st)
+ #define bn_t	PREFIX(bn_t)
+ 
+-#undef bn_init
++#undef relic_bn_init
+ #undef bn_clean
+ #undef bn_grow
+ #undef bn_trim
+@@ -266,7 +266,7 @@
+ #undef bn_rec_jsf
+ #undef bn_rec_glv
+ 
+-#define bn_init 	PREFIX(bn_init)
++#define relic_bn_init 	PREFIX(relic_bn_init)
+ #define bn_clean 	PREFIX(bn_clean)
+ #define bn_grow 	PREFIX(bn_grow)
+ #define bn_trim 	PREFIX(bn_trim)
 diff --git i/extern/ENCRYPTO_utils/extern/relic/src/CMakeLists.txt w/extern/ENCRYPTO_utils/extern/relic/src/CMakeLists.txt
 index 4255bc0..b033cb7 100644
 --- i/extern/ENCRYPTO_utils/extern/relic/src/CMakeLists.txt
@@ -50,6 +138,120 @@ index 4255bc0..b033cb7 100644
  endif(STLIB)
 +
 +install(EXPORT "${PROJECT_NAME}Targets" NAMESPACE "${PROJECT_NAME}::" DESTINATION "lib/cmake/${PROJECT_NAME}")
+diff --git i/extern/ENCRYPTO_utils/extern/relic/src/bn/relic_bn_mem.c w/extern/ENCRYPTO_utils/extern/relic/src/bn/relic_bn_mem.c
+index ca0ae3b..68d04a1 100644
+--- i/extern/ENCRYPTO_utils/extern/relic/src/bn/relic_bn_mem.c
++++ w/extern/ENCRYPTO_utils/extern/relic/src/bn/relic_bn_mem.c
+@@ -41,7 +41,7 @@
+ /* Public definitions                                                         */
+ /*============================================================================*/
+ 
+-void bn_init(bn_t a, int digits) {
++void relic_bn_init(bn_t a, int digits) {
+ #if ALLOC == DYNAMIC
+ 	if (digits % RLC_BN_SIZE != 0) {
+ 		/* Pad the number of digits to a multiple of the block. */
+diff --git i/extern/ENCRYPTO_utils/extern/relic/src/eb/relic_eb_curve.c w/extern/ENCRYPTO_utils/extern/relic/src/eb/relic_eb_curve.c
+index e163436..6b4eb6a 100644
+--- i/extern/ENCRYPTO_utils/extern/relic/src/eb/relic_eb_curve.c
++++ w/extern/ENCRYPTO_utils/extern/relic/src/eb/relic_eb_curve.c
+@@ -73,8 +73,8 @@ void eb_curve_init(void) {
+ 	fb_zero(ctx->eb_g.x);
+ 	fb_zero(ctx->eb_g.y);
+ 	fb_zero(ctx->eb_g.z);
+-	bn_init(&(ctx->eb_r), RLC_FB_DIGS);
+-	bn_init(&(ctx->eb_h), RLC_FB_DIGS);
++	relic_bn_init(&(ctx->eb_r), RLC_FB_DIGS);
++	relic_bn_init(&(ctx->eb_h), RLC_FB_DIGS);
+ }
+ 
+ void eb_curve_clean(void) {
+diff --git i/extern/ENCRYPTO_utils/extern/relic/src/ed/relic_ed_curve.c w/extern/ENCRYPTO_utils/extern/relic/src/ed/relic_ed_curve.c
+index fcd27d2..f49accf 100644
+--- i/extern/ENCRYPTO_utils/extern/relic/src/ed/relic_ed_curve.c
++++ w/extern/ENCRYPTO_utils/extern/relic/src/ed/relic_ed_curve.c
+@@ -40,8 +40,8 @@ void ed_curve_init(void) {
+ 	}
+ #endif
+ 	ed_set_infty(&ctx->ed_g);
+-	bn_init(&ctx->ed_r, RLC_FP_DIGS);
+-	bn_init(&ctx->ed_h, RLC_FP_DIGS);
++	relic_bn_init(&ctx->ed_r, RLC_FP_DIGS);
++	relic_bn_init(&ctx->ed_h, RLC_FP_DIGS);
+ }
+ 
+ void ed_curve_clean(void) {
+diff --git i/extern/ENCRYPTO_utils/extern/relic/src/ep/relic_ep_curve.c w/extern/ENCRYPTO_utils/extern/relic/src/ep/relic_ep_curve.c
+index d48abb6..dd7488a 100644
+--- i/extern/ENCRYPTO_utils/extern/relic/src/ep/relic_ep_curve.c
++++ w/extern/ENCRYPTO_utils/extern/relic/src/ep/relic_ep_curve.c
+@@ -94,12 +94,12 @@ void ep_curve_init(void) {
+ 	}
+ #endif
+ 	ep_set_infty(&ctx->ep_g);
+-	bn_init(&ctx->ep_r, RLC_FP_DIGS);
+-	bn_init(&ctx->ep_h, RLC_FP_DIGS);
++	relic_bn_init(&ctx->ep_r, RLC_FP_DIGS);
++	relic_bn_init(&ctx->ep_h, RLC_FP_DIGS);
+ #if defined(EP_ENDOM) && (EP_MUL == LWNAF || EP_FIX == COMBS || EP_FIX == LWNAF || !defined(STRIP))
+ 	for (int i = 0; i < 3; i++) {
+-		bn_init(&(ctx->ep_v1[i]), RLC_FP_DIGS);
+-		bn_init(&(ctx->ep_v2[i]), RLC_FP_DIGS);
++		relic_bn_init(&(ctx->ep_v1[i]), RLC_FP_DIGS);
++		relic_bn_init(&(ctx->ep_v2[i]), RLC_FP_DIGS);
+ 	}
+ #endif
+ }
+diff --git i/extern/ENCRYPTO_utils/extern/relic/src/epx/relic_ep2_curve.c w/extern/ENCRYPTO_utils/extern/relic/src/epx/relic_ep2_curve.c
+index bf7a3f9..9dc0b32 100644
+--- i/extern/ENCRYPTO_utils/extern/relic/src/epx/relic_ep2_curve.c
++++ w/extern/ENCRYPTO_utils/extern/relic/src/epx/relic_ep2_curve.c
+@@ -290,8 +290,8 @@ void ep2_curve_init(void) {
+ #endif
+ #endif
+ 	ep2_set_infty(&(ctx->ep2_g));
+-	bn_init(&(ctx->ep2_r), RLC_FP_DIGS);
+-	bn_init(&(ctx->ep2_h), RLC_FP_DIGS);
++	relic_bn_init(&(ctx->ep2_r), RLC_FP_DIGS);
++	relic_bn_init(&(ctx->ep2_h), RLC_FP_DIGS);
+ }
+ 
+ void ep2_curve_clean(void) {
+diff --git i/extern/ENCRYPTO_utils/extern/relic/src/fp/relic_fp_prime.c w/extern/ENCRYPTO_utils/extern/relic/src/fp/relic_fp_prime.c
+index 0174b9d..3ba2323 100644
+--- i/extern/ENCRYPTO_utils/extern/relic/src/fp/relic_fp_prime.c
++++ w/extern/ENCRYPTO_utils/extern/relic/src/fp/relic_fp_prime.c
+@@ -135,14 +135,14 @@ static void fp_prime_set(const bn_t p) {
+ void fp_prime_init(void) {
+ 	ctx_t *ctx = core_get();
+ 	ctx->fp_id = 0;
+-	bn_init(&(ctx->prime), RLC_FP_DIGS);
++	relic_bn_init(&(ctx->prime), RLC_FP_DIGS);
+ #if FP_RDC == QUICK || !defined(STRIP)
+ 	ctx->sps_len = 0;
+ 	memset(ctx->sps, 0, sizeof(ctx->sps));
+ #endif
+ #if FP_RDC == MONTY || !defined(STRIP)
+-	bn_init(&(ctx->conv), RLC_FP_DIGS);
+-	bn_init(&(ctx->one), RLC_FP_DIGS);
++	relic_bn_init(&(ctx->conv), RLC_FP_DIGS);
++	relic_bn_init(&(ctx->one), RLC_FP_DIGS);
+ #endif
+ }
+ 
+diff --git i/extern/ENCRYPTO_utils/extern/relic/src/low/easy/relic_fp_inv_low.c w/extern/ENCRYPTO_utils/extern/relic/src/low/easy/relic_fp_inv_low.c
+index fbc1585..42f02a0 100644
+--- i/extern/ENCRYPTO_utils/extern/relic/src/low/easy/relic_fp_inv_low.c
++++ w/extern/ENCRYPTO_utils/extern/relic/src/low/easy/relic_fp_inv_low.c
+@@ -43,7 +43,7 @@
+ void fp_invn_low(dig_t *c, const dig_t *a) {
+ 	bn_st e;
+ 
+-	bn_init(&e, RLC_FP_DIGS);
++	relic_bn_init(&e, RLC_FP_DIGS);
+ 
+ 	e.used = RLC_FP_DIGS;
+ 	dv_copy(e.dp, fp_prime_get(), RLC_FP_DIGS);
 diff --git i/extern/ENCRYPTO_utils/src/CMakeLists.txt w/extern/ENCRYPTO_utils/src/CMakeLists.txt
 index 2e80478..afa63e2 100644
 --- i/extern/ENCRYPTO_utils/src/CMakeLists.txt
