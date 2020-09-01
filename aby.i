@@ -132,3 +132,14 @@
 %template() share::get_clear_value<uint16_t>;
 %template() share::get_clear_value<uint32_t>;
 %template() share::get_clear_value<uint64_t>;
+
+// Add code to the generated Java wrapper to automatically load the library.
+%pragma(java) jniclasscode=%{
+  static {
+    try {
+      org.scijava.nativelib.NativeLoader.loadLibrary("abyjava");
+    } catch (java.io.IOException e) {
+      throw new Error(e);
+    }
+  }
+%}

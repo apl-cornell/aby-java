@@ -113,4 +113,13 @@ public class AbyJNI {
   public final static native void SecurityLevel_ifcbits_set(long jarg1, SecurityLevel jarg1_, long jarg2);
   public final static native long SecurityLevel_ifcbits_get(long jarg1, SecurityLevel jarg1_);
   public final static native long new_SecurityLevel();
+
+  static {
+    try {
+      org.scijava.nativelib.NativeLoader.loadLibrary("abyjava");
+    } catch (java.io.IOException e) {
+      throw new Error(e);
+    }
+  }
+
 }
