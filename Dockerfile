@@ -1,23 +1,35 @@
-FROM alpine:3.12
+FROM ubuntu:20.04
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=America/New_York
+
 WORKDIR /root
 
 # Install dependencies
-RUN apk add --no-cache \
-    boost-dev \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
     cmake \
     g++ \
     git \
-    gmp-dev \
-    libressl-dev \
+    lzip \
+    m4 \
     make \
-    openjdk11-jdk \
-    swig
+    openjdk-11-jdk-headless \
+    swig \
+    wget
+    # && rm -rf /var/lib/apt/lists/*
 
-ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+
+# Copy configuration
+COPY gradle.properties .
+COPY scripts/variables.sh scripts/
+
+# Download and build source dependencies
+COPY external external
+RUN make -C external build-all clean-source clean-build
 
 # Download ABY source code
-COPY gradle.properties .
-COPY scripts/variables.sh scripts/get_aby.sh scripts/
+COPY scripts/get_aby.sh scripts/
 RUN scripts/get_aby.sh
 
 # Apply our patch to ABY sources
@@ -33,4 +45,4 @@ RUN scripts/generate_java_interface.sh
 # Build for Linux
 COPY CMakeLists.txt .
 COPY scripts/build_java_wrapper.sh scripts/
-# RUN scripts/build_java_wrapper.sh
+RUN scripts/build_java_wrapper.sh
