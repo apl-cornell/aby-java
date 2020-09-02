@@ -6,6 +6,5 @@ ABY_VERSION=$(grep abyVersion < "$GRADLE_PROPERTIES" | cut -d'=' -f2)
 ABY_GROUP=$(grep abyGroup < "$GRADLE_PROPERTIES" | cut -d'=' -f2)
 
 ABY_DIR=$(pwd -P)/ABY
-INSTALL_DIR=$ABY_DIR/build/install
 
-export DIR ABY_VERSION ABY_GROUP ABY_DIR INSTALL_DIR
+export DIR ABY_VERSION ABY_GROUP ABY_DIR

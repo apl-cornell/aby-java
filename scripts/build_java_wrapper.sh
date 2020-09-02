@@ -4,13 +4,6 @@
 
 set -e
 
-if command -v brew > /dev/null
-then
-    # TODO: remove, since these only apply to MacOS
-    OPENSSL_ROOT_DIR=$(brew --prefix openssl)
-    export OPENSSL_ROOT_DIR
-fi
-
 BUILD_DIR=build/cmake
 INSTALL_DIR=$BUILD_DIR/install
 mkdir -p $INSTALL_DIR
