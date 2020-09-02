@@ -12,6 +12,11 @@ if(NOT CMAKE_ARCHIVE_OUTPUT_DIRECTORY)
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
 endif()
 
+# Prefer locally built dependencies over system dependencies.
+set(CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/external/install")
+
+set(JAVA_AWT_LIBRARY NotNeeded)
+set(JAVA_AWT_INCLUDE_PATH NotNeeded)
 find_package(JNI REQUIRED)
 
 # Link dependencies statically to generate a self contained binary.
@@ -23,7 +28,12 @@ else()
     set(CMAKE_FIND_LIBRARY_SUFFIXES .a)
 endif()
 
+# Generate relocatable code since we are statically linking.
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+
 add_subdirectory(ABY)
+
 
 add_library(abyjava SHARED
     src/main/cpp/aby_wrap.cpp
