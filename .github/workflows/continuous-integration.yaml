@@ -1,6 +1,6 @@
 name: CI
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
   build:
@@ -11,8 +11,8 @@ jobs:
     strategy:
       matrix:
         # os: [macos-latest, ubuntu-latest, windows-latest]
-        os: [macos-latest]
-        java: [11]
+        os: [ macos-latest, ubuntu-latest ]
+        java: [ 11 ]
 
     steps:
       - uses: actions/checkout@v2
