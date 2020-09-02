@@ -3,14 +3,17 @@ WORKDIR /root
 
 # Install dependencies
 RUN apk add --no-cache \
-  boost-dev \
-  cmake \
-  g++ \
-  git \
-  gmp-dev \
-  libressl-dev \
-  make \
-  swig
+    boost-dev \
+    cmake \
+    g++ \
+    git \
+    gmp-dev \
+    libressl-dev \
+    make \
+    openjdk11-jdk \
+    swig
+
+ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 
 # Download ABY source code
 COPY gradle.properties .
