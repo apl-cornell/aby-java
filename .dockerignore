@@ -8,3 +8,9 @@
 !aby.i
 !CMakeLists.txt
 !external/Makefile
+
+# For testing
+!*.gradle.kts
+!gradle
+!gradlew
+!src/test

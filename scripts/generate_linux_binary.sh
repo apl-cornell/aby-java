@@ -5,7 +5,7 @@
 set -e
 
 # Build the Docker image and remember its ID.
-IMAGE_ID=$(docker build . | tee /dev/tty | tail -n1 | cut -d' ' -f3)
+IMAGE_ID=$(docker build --target builder . | tee /dev/tty | tail -n1 | cut -d' ' -f3)
 
 # Copy the linux binary out.
 OUTPUT_DIR=src/main/resources/natives/linux_64

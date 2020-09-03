@@ -1,4 +1,5 @@
-FROM ubuntu:20.04
+# Stage 1: Build binaries
+FROM ubuntu:20.04 AS builder
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=America/New_York
 
@@ -46,3 +47,26 @@ RUN scripts/generate_java_interface.sh
 COPY CMakeLists.txt .
 COPY scripts/build_java_wrapper.sh scripts/
 RUN scripts/build_java_wrapper.sh
+
+
+# Stage 2: test built Linux binary
+FROM openjdk:11-jdk-slim as tester
+CMD ["/bin/bash"]
+WORKDIR /root
+
+## Have Gradle Wrapper download the Gradle binary
+COPY gradlew .
+COPY gradle gradle
+RUN ./gradlew --version
+
+## Have Gradle download all dependencies
+COPY gradle.properties *.gradle.kts ./
+RUN ./gradlew --no-daemon assemble || return 0
+
+## Copy the ABY binary
+COPY --from=builder /root/src/main/java src/main/java
+COPY --from=builder /root/build/cmake/install/lib/libabyjava.so src/main/resources/natives/linux_64/
+
+## Build and test the app
+COPY src/test src/test
+RUN ./gradlew --no-daemon build
