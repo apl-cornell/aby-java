@@ -15,10 +15,6 @@ endif()
 # Prefer locally built dependencies over system dependencies.
 set(CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/external/install")
 
-set(JAVA_AWT_LIBRARY NotNeeded)
-set(JAVA_AWT_INCLUDE_PATH NotNeeded)
-find_package(JNI REQUIRED)
-
 # Link dependencies statically to generate a self contained binary.
 set(Boost_USE_STATIC_LIBS ON)
 set(OPENSSL_USE_STATIC_LIBS ON)
@@ -34,6 +30,14 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 add_subdirectory(ABY)
 
+
+set(JAVA_INCLUDE_PATH ${CMAKE_PREFIX_PATH}/include)
+if(WIN32)
+    set(JAVA_INCLUDE_PATH2 ${CMAKE_PREFIX_PATH}/include/windows)
+else()
+    set(JAVA_INCLUDE_PATH2 ${CMAKE_PREFIX_PATH}/include/unix)
+endif()
+set(JNI_INCLUDE_DIRS ${JAVA_INCLUDE_PATH} ${JAVA_INCLUDE_PATH2})
 
 add_library(abyjava SHARED
     src/main/cpp/aby_wrap.cpp
