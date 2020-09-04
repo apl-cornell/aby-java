@@ -1,33 +1,16 @@
-# Stage 1: Build binaries
-FROM ubuntu:20.04 AS builder
-ARG DEBIAN_FRONTEND=noninteractive
-ENV TZ=America/New_York
-
+# Generate the Java interface using SWIG
+FROM bitnami/minideb:buster AS swig
 WORKDIR /root
 
 # Install dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN install_packages \
     ca-certificates \
-    cmake \
-    g++ \
     git \
-    lzip \
-    m4 \
-    make \
-    openjdk-11-jdk-headless \
-    swig \
-    wget
-    # && rm -rf /var/lib/apt/lists/*
-
-ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+    swig
 
 # Copy configuration
 COPY gradle.properties .
 COPY scripts/variables.sh scripts/
-
-# Download and build source dependencies
-COPY external external
-RUN make -C external build-all clean-source clean-build
 
 # Download ABY source code
 COPY scripts/get_aby.sh scripts/
@@ -43,15 +26,52 @@ COPY aby.i .
 COPY scripts/generate_java_interface.sh scripts/
 RUN scripts/generate_java_interface.sh
 
+
+# Build the Linux binary
+FROM ubuntu:20.04 AS builder
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=America/New_York
+
+WORKDIR /root
+
+# Install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    cmake \
+    g++ \
+    m4 \
+    make \
+    perl \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+# Download and build source dependencies
+COPY external external
+RUN make -C external build-boost clean-source clean-build
+RUN make -C external build-gmp clean-source clean-build
+RUN make -C external build-openssl clean-source clean-build
+RUN make -C external build-openjdk clean-source clean-build
+
+# Copy ABY source code
+COPY --from=swig /root/ABY ABY
+
+# Copy generated Java interface and wrappper code
+COPY --from=swig /root/src src
+
 # Build for Linux
 COPY CMakeLists.txt .
-COPY scripts/build_java_wrapper.sh scripts/
+COPY gradle.properties .
+COPY scripts/variables.sh scripts/build_java_wrapper.sh scripts/
 RUN scripts/build_java_wrapper.sh
+RUN mkdir -p src/main/resources/natives/linux_64 && cp build/cmake/install/lib/libabyjava.so "$_"/
 
 
-# Stage 2: test built Linux binary
-FROM openjdk:11-jdk-slim as tester
-CMD ["/bin/bash"]
+# Test built Linux binary
+FROM ubuntu:20.04 as tester
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    openjdk-11-jdk-headless
+
 WORKDIR /root
 
 ## Have Gradle Wrapper download the Gradle binary
@@ -61,11 +81,10 @@ RUN ./gradlew --version
 
 ## Have Gradle download all dependencies
 COPY gradle.properties *.gradle.kts ./
-RUN ./gradlew --no-daemon assemble || return 0
+RUN ./gradlew --no-daemon build || return 0
 
-## Copy the ABY binary
-COPY --from=builder /root/src/main/java src/main/java
-COPY --from=builder /root/build/cmake/install/lib/libabyjava.so src/main/resources/natives/linux_64/
+## Copy wrapper code and the ABY binary
+COPY --from=builder /root/src src
 
 ## Build and test the app
 COPY src/test src/test
