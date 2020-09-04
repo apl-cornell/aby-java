@@ -18,27 +18,27 @@ all: build-all
 .PHONY:all
 
 $(SOURCE_DIR)/$(BOOST_ARCHIVE):
-	mkdir -p $(SOURCE_DIR)
+	mkdir -p $(dir $@)
 	wget --quiet https://dl.bintray.com/boostorg/release/$(BOOST_VERSION)/source/$(BOOST_ARCHIVE) -O $@
 
 $(SOURCE_DIR)/$(GMP_ARCHIVE):
-	mkdir -p $(SOURCE_DIR)
+	mkdir -p $(dir $@)
 	wget --quiet https://gmplib.org/download/gmp/$(GMP_ARCHIVE) -O $@
 
 $(SOURCE_DIR)/$(OPENSSL_ARCHIVE):
-	mkdir -p $(SOURCE_DIR)
+	mkdir -p $(dir $@)
 	wget --quiet https://www.openssl.org/source/$(OPENSSL_ARCHIVE) -O $@
 
 $(SOURCE_DIR)/$(BOOST_FOLDER): $(SOURCE_DIR)/$(BOOST_ARCHIVE)
-	tar --extract --file $< --directory $(SOURCE_DIR)
+	tar --extract --file $< --directory $(dir $@)
 	touch $@
 
 $(SOURCE_DIR)/$(GMP_FOLDER): $(SOURCE_DIR)/$(GMP_ARCHIVE)
-	tar --extract --file $< --directory $(SOURCE_DIR)
+	tar --extract --file $< --directory $(dir $@)
 	touch $@
 
 $(SOURCE_DIR)/$(OPENSSL_FOLDER): $(SOURCE_DIR)/$(OPENSSL_ARCHIVE)
-	tar --extract --file $< --directory $(SOURCE_DIR)
+	tar --extract --file $< --directory $(dir $@)
 	touch $@
 
 get-boost: $(SOURCE_DIR)/$(BOOST_FOLDER)
@@ -49,21 +49,21 @@ get-all: get-boost get-gmp get-openssl
 
 build-boost: $(SOURCE_DIR)/$(BOOST_FOLDER)
 	mkdir -p $(BUILD_DIR)/$(BOOST_FOLDER)
-	cd $(SOURCE_DIR)/$(BOOST_FOLDER) \
+	cd $< \
 		&& ./bootstrap.sh --with-libraries=system,thread,chrono,date_time,atomic --prefix=$(INSTALL_DIR) \
 		&& ./b2 --build-dir=$(BUILD_DIR)/$(BOOST_FOLDER) link=static install
 
 build-gmp: $(SOURCE_DIR)/$(GMP_FOLDER)
 	mkdir -p $(BUILD_DIR)/$(GMP_FOLDER)
 	cd $(BUILD_DIR)/$(GMP_FOLDER) \
-		&& $(SOURCE_DIR)/$(GMP_FOLDER)/configure --prefix=$(INSTALL_DIR) --enable-cxx --with-pic --enable-shared=no \
+		&& $</configure --prefix=$(INSTALL_DIR) --enable-cxx --with-pic --enable-shared=no \
 		&& $(MAKE) install \
 		# && $(MAKE) check
 
 build-openssl: $(SOURCE_DIR)/$(OPENSSL_FOLDER)
 	mkdir -p $(BUILD_DIR)/$(OPENSSL_FOLDER)
 	cd $(BUILD_DIR)/$(OPENSSL_FOLDER) \
-		&& $(SOURCE_DIR)/$(OPENSSL_FOLDER)/config --prefix=$(INSTALL_DIR) --openssldir=$(INSTALL_DIR)/ssl no-shared \
+		&& $</config --prefix=$(INSTALL_DIR) --openssldir=$(INSTALL_DIR)/ssl no-shared \
 		&& $(MAKE) install_dev
 
 build-all: build-boost build-gmp build-openssl
