@@ -35,23 +35,9 @@ WORKDIR /root
 RUN yum -y install \
     wget \
     && yum clean all
-#RUN install_packages \
-#    cmake \
-#    g++ \
-#    git \
-#    lzip \
-#    m4 \
-#    make \
-#    openjdk-11-jdk-headless \
-#    swig \
-#    wget
-#    # && rm -rf /var/lib/apt/lists/*
-
-#ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 
 # Download and build source dependencies
 COPY external external
-RUN make -C external get-all
 RUN /hbb_shlib/activate-exec make -C external build-boost clean-source clean-build
 RUN /hbb_shlib/activate-exec make -C external build-gmp clean-source clean-build
 RUN /hbb_shlib/activate-exec make -C external build-openssl clean-source clean-build
@@ -63,21 +49,25 @@ COPY --from=swig /root/ABY ABY
 # Copy generated Java interface and wrappper code
 COPY --from=swig /root/src src
 
-# Build for Linux
+# Build the wrapper library
 COPY CMakeLists.txt .
 COPY gradle.properties .
 COPY scripts/variables.sh scripts/build_java_wrapper.sh scripts/
 RUN /hbb_shlib/activate-exec scripts/build_java_wrapper.sh
-RUN mkdir -p src/main/resources/natives/linux_64 && cp build/cmake/install/lib/libabyjava.so "$_"/
 
-# Ensure that the generated libraries are portable
-RUN /hbb_shlib/activate-exec libcheck src/main/resources/natives/linux_64/libabyjava.so
+# Copy the wrapper library into resources
+ENV ABY_JAVA_INSTALL_DIR=src/main/resources/natives/linux_64
+RUN mkdir -p $ABY_JAVA_INSTALL_DIR && cp build/cmake/install/lib/libabyjava.so "$_"/
+RUN strip --strip-all $ABY_JAVA_INSTALL_DIR/libabyjava.so
+
+# Check that the generated libraries are portable
+RUN /hbb_shlib/activate-exec libcheck $ABY_JAVA_INSTALL_DIR/libabyjava.so
 
 
 # Test built Linux binary
 # FROM openjdk:11-jdk-slim as tester
 
-FROM ubuntu:18.04 as tester
+FROM ubuntu:20.04 as tester
 RUN apt-get update && apt-get install -y --no-install-recommends \
     openjdk-11-jdk-headless
 
@@ -93,7 +83,7 @@ RUN ./gradlew --version
 COPY gradle.properties *.gradle.kts ./
 RUN ./gradlew --no-daemon build || return 0
 
-## Copy the ABY binary
+## Copy wrapper code and the ABY binary
 COPY --from=builder /root/src src
 
 ## Build and test the app
