@@ -12,5 +12,5 @@ OUTPUT_DIR=src/main/resources/natives/linux_64
 mkdir -p $OUTPUT_DIR
 
 CONTAINER_ID=$(docker create "$IMAGE_ID")
-docker cp "$CONTAINER_ID:/root/build/cmake/install/lib/libabyjava.so" $OUTPUT_DIR/
+docker cp "$CONTAINER_ID:/root/$OUTPUT_DIR/libabyjava.so" $OUTPUT_DIR/
 docker rm "$CONTAINER_ID"
