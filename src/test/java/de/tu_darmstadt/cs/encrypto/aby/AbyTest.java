@@ -107,7 +107,7 @@ class AbyTest {
     testBinaryGate(gate, evaluate, sharingType, 32, 0xFFF, 0xF01);
   }
 
-  private void testBinaryGate(
+  private static void testBinaryGate(
       BinaryGate gate,
       BinaryOperator<Integer> evaluate,
       SharingType sharingType,
@@ -126,7 +126,7 @@ class AbyTest {
   }
 
   /** Asserts that the given single output circuit produces the expected result. */
-  private void testCircuit(
+  private static void testCircuit(
       CircuitBuilder circuitBuilder, SharingType sharingType, int bitLength, int expectedResult) {
     // Run the code of each party in a separate thread.
     final Future<BigInteger> serverFuture =
@@ -149,7 +149,7 @@ class AbyTest {
   }
 
   /** Executes the given single output circuit as the given role and returns the result. */
-  private Callable<BigInteger> runCircuitAs(
+  private static Callable<BigInteger> runCircuitAs(
       Role role, CircuitBuilder circuitBuilder, SharingType sharingType, int bitLength) {
     return () -> {
       // The party that will receive the output.
