@@ -23,3 +23,7 @@ $(RESOURCE_DIR)/linux_64/lib$(LIBRARY_NAME).so:
 	rm -f $@
 	./scripts/docker_copy.sh "--target builder" /root/$@ $@
 .PHONY: $(RESOURCE_DIR)/linux_64/lib$(LIBRARY_NAME).so
+
+test:
+	docker build --target tester .
+.PHONY: test
