@@ -1,3 +1,16 @@
+diff --git i/CMakeLists.txt w/CMakeLists.txt
+index e42117b..7a46e85 100644
+--- i/CMakeLists.txt
++++ w/CMakeLists.txt
+@@ -58,7 +58,7 @@ endif()
+ 
+ find_package(GMP REQUIRED)
+ find_package(Threads REQUIRED)
+-find_package(Boost 1.66.0 REQUIRED COMPONENTS thread system)
++find_package(Boost 1.66.0 REQUIRED COMPONENTS filesystem thread system)
+ 
+ add_subdirectory(src/abycore)
+ 
 Submodule extern/ENCRYPTO_utils contains modified content
 diff --git i/extern/ENCRYPTO_utils/CMakeLists.txt w/extern/ENCRYPTO_utils/CMakeLists.txt
 index 3a67fe3..f24ae8b 100644
@@ -266,25 +279,26 @@ index 2e80478..afa63e2 100644
  
  install(TARGETS encrypto_utils
 diff --git i/src/abycore/CMakeLists.txt w/src/abycore/CMakeLists.txt
-index d25f529..e12284f 100644
+index d25f529..196d7fd 100644
 --- i/src/abycore/CMakeLists.txt
 +++ w/src/abycore/CMakeLists.txt
-@@ -32,9 +32,12 @@ target_include_directories(aby
- # libc++.  Linking to libstdc++fs is currently required when using the
- # std::filesystem library.
- # cf. https://gitlab.kitware.com/cmake/cmake/issues/17834
+@@ -28,15 +28,8 @@ target_include_directories(aby
+         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
+ )
+ 
+-# This assumes that libstdc++ is used and should not be required for e.g.
+-# libc++.  Linking to libstdc++fs is currently required when using the
+-# std::filesystem library.
+-# cf. https://gitlab.kitware.com/cmake/cmake/issues/17834
 -target_link_libraries(aby
 -	PRIVATE stdc++fs
 -)
-+
-+if (NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-+    target_link_libraries(aby
-+        PRIVATE stdc++fs
-+    )
-+endif()
- 
+-
  target_link_libraries(aby
++    PRIVATE Boost::filesystem
      PUBLIC OTExtension::otextension
+     PUBLIC ENCRYPTO_utils::encrypto_utils
+     PUBLIC GMP::GMP
 diff --git i/src/abycore/circuit/circuit.h w/src/abycore/circuit/circuit.h
 index 01d67af..a01d87d 100644
 --- i/src/abycore/circuit/circuit.h
@@ -328,3 +342,57 @@ index 01d67af..a01d87d 100644
  		std::cout << "IN gate not implemented in super-class, stopping!" << std::endl;
  		return -1;
  	}
+diff --git i/src/abycore/sharing/boolsharing.cpp w/src/abycore/sharing/boolsharing.cpp
+index 513925d..653f035 100644
+--- i/src/abycore/sharing/boolsharing.cpp
++++ w/src/abycore/sharing/boolsharing.cpp
+@@ -19,15 +19,8 @@
+ #include "../aby/abysetup.h"
+ #include <cstdlib>
+ 
+-#if __has_include(<filesystem>)
+-#include <filesystem>
+-namespace filesystem = std::filesystem;
+-#elif __has_include(<experimental/filesystem>)
+-#include <experimental/filesystem>
+-namespace filesystem = std::experimental::filesystem;
+-#else
+-#error "C++17 filesystem library not found"
+-#endif
++#include <boost/filesystem.hpp>
++namespace filesystem = boost::filesystem;
+ 
+ 
+ void BoolSharing::Init() {
+diff --git i/src/abycore/sharing/sharing.cpp w/src/abycore/sharing/sharing.cpp
+index 1b973b7..3ffe80c 100644
+--- i/src/abycore/sharing/sharing.cpp
++++ w/src/abycore/sharing/sharing.cpp
+@@ -23,15 +23,9 @@
+ #include <cstring>
+ #include <cstdlib>
+ 
+-#if __has_include(<filesystem>)
+-#include <filesystem>
+-namespace filesystem = std::filesystem;
+-#elif __has_include(<experimental/filesystem>)
+-#include <experimental/filesystem>
+-namespace filesystem = std::experimental::filesystem;
+-#else
+-#error "C++17 filesystem library not found"
+-#endif
++#include <boost/system/error_code.hpp>
++#include <boost/filesystem.hpp>
++namespace filesystem = boost::filesystem;
+ 
+ #include <iostream>
+ #include <iomanip>
+@@ -94,7 +88,7 @@ void Sharing::PreCompFileDelete() {
+ 		}
+ 		else {
+ 			truncation_size = filesystem::file_size(filename) - m_nFilePos;
+-			std::error_code ec;
++			boost::system::error_code ec;
+ 			filesystem::resize_file(filename, truncation_size, ec);
+ 			if(ec) {
+ 				std::cout << "Error occured in truncate:" << ec.message() << std::endl;

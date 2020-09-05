@@ -72,8 +72,8 @@ get-all: get-boost get-gmp get-openssl
 build-boost: $(SOURCE_DIR)/$(BOOST_FOLDER)
 	mkdir -p $(BUILD_DIR)/$(BOOST_FOLDER)
 	cd $< \
-		&& ./bootstrap.sh --with-libraries=system,thread --prefix=$(INSTALL_DIR) \
-		&& ./b2 --build-dir=$(BUILD_DIR)/$(BOOST_FOLDER) link=static install
+		&& ./bootstrap.sh --with-libraries=filesystem,system,thread --prefix=$(INSTALL_DIR) \
+		&& ./b2 --build-dir=$(BUILD_DIR)/$(BOOST_FOLDER) link=static cxxflags="$(CXXFLAGS)" install
 
 build-gmp: $(SOURCE_DIR)/$(GMP_FOLDER)
 	mkdir -p $(BUILD_DIR)/$(GMP_FOLDER)
