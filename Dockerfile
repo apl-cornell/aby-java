@@ -66,12 +66,12 @@ RUN /hbb_shlib/activate-exec libcheck $ABY_JAVA_INSTALL_DIR/libabyjava.so
 
 # Test built Linux binary
 # FROM openjdk:11-jdk-slim as tester
+# CMD ["/bin/bash"]
 
 FROM ubuntu:20.04 as tester
 RUN apt-get update && apt-get install -y --no-install-recommends \
     openjdk-11-jdk-headless
 
-CMD ["/bin/bash"]
 WORKDIR /root
 
 ## Have Gradle Wrapper download the Gradle binary
