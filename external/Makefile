@@ -78,7 +78,7 @@ build-boost: $(SOURCE_DIR)/$(BOOST_FOLDER)
 build-gmp: $(SOURCE_DIR)/$(GMP_FOLDER)
 	mkdir -p $(BUILD_DIR)/$(GMP_FOLDER)
 	cd $(BUILD_DIR)/$(GMP_FOLDER) \
-		&& $</configure --prefix=$(INSTALL_DIR) --enable-cxx --with-pic --enable-shared=no \
+		&& $</configure --prefix=$(INSTALL_DIR) --enable-cxx --enable-fat --with-pic --disable-shared \
 		&& $(MAKE) install \
 		# && $(MAKE) check
 
