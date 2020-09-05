@@ -37,6 +37,12 @@ RUN yum -y install \
     wget \
     && yum clean all
 
+# Holy Build Box provided libstdc++.a has broken std::thread support.
+# See https://github.com/phusion/holy-build-box/issues/19.
+# This is causing missing symbol errors on CI. We remove this library
+# to force GCC to pickup its own libstdc++ which seems to be portable.
+RUN rm -f /hbb_shlib/lib/libstdc++.a
+
 # Download and build source dependencies
 COPY external external
 RUN /hbb_shlib/activate-exec make -C external build-boost clean-source clean-build
