@@ -1,12 +1,13 @@
 # Generate the Java interface using SWIG
-FROM bitnami/minideb:buster AS swig
+FROM ubuntu:20.04 AS swig
 WORKDIR /root
 
 # Install dependencies
-RUN install_packages \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     git \
-    swig
+    swig \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy configuration
 COPY gradle.properties .
