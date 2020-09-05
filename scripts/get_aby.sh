@@ -18,5 +18,5 @@ git fetch --quiet --depth 1 $ABY_URL "$ABY_VERSION"
 git checkout --quiet "$ABY_VERSION"
 git reset --quiet --hard "$ABY_VERSION"
 git submodule update --init --depth 1 2> /dev/null
-git submodule update --init --recursive --depth 1 extern/ENCRYPTO_utils 2> /dev/null
+(cd extern/ENCRYPTO_utils && git submodule update --init --depth 1 extern/relic 2> /dev/null)
 git submodule foreach --recursive git reset --quiet --hard
