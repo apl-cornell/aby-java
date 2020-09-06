@@ -16,8 +16,10 @@ OPENSSL_FOLDER  := openssl-$(OPENSSL_VERSION)
 OPENSSL_ARCHIVE := $(OPENSSL_FOLDER).tar.gz
 OPENJDK_FOLDER  := openjdk-$(OPENJDK_VERSION)
 
+ifdef STATICLIB_CFLAGS
 export CFLAGS   = $(STATICLIB_CFLAGS)
 export CXXFLAGS = $(STATICLIB_CFLAGS)
+endif
 
 all: build-all
 .PHONY:all
@@ -69,11 +71,15 @@ get-openjdk: $(SOURCE_DIR)/$(OPENJDK_FOLDER)
 get-all: get-boost get-gmp get-openssl
 .PHONY: get-all get-boost get-gmp get-openssl get-openjdk
 
+ifdef CXXFLAGS
+BOOST_CXXFLAGS = cxxflags="$(CXXFLAGS)"
+endif
+
 build-boost: $(SOURCE_DIR)/$(BOOST_FOLDER)
 	mkdir -p $(BUILD_DIR)/$(BOOST_FOLDER)
 	cd $< \
 		&& ./bootstrap.sh --with-libraries=filesystem,system,thread --prefix=$(INSTALL_DIR) \
-		&& ./b2 --build-dir=$(BUILD_DIR)/$(BOOST_FOLDER) link=static cxxflags="$(CXXFLAGS)" install
+		&& ./b2 --build-dir=$(BUILD_DIR)/$(BOOST_FOLDER) link=static $(BOOST_CXXFLAGS) install
 
 build-gmp: $(SOURCE_DIR)/$(GMP_FOLDER)
 	mkdir -p $(BUILD_DIR)/$(GMP_FOLDER)
