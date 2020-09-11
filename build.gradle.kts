@@ -1,5 +1,6 @@
 plugins {
     `java-library`
+    `maven-publish`
 
     // Style checking
     id("com.diffplug.spotless") version "5.1.0"
@@ -62,4 +63,14 @@ tasks.jacocoTestReport {
         html.isEnabled = true
     }
     dependsOn(tasks.test)
+}
+
+/** Publishing */
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+        }
+    }
 }
