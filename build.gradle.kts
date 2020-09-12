@@ -1,3 +1,5 @@
+import org.gradle.api.JavaVersion.VERSION_1_8
+
 plugins {
     `java-library`
     `maven-publish`
@@ -21,9 +23,9 @@ repositories {
 
 /** Java Version */
 
-tasks.withType<JavaCompile> {
-    sourceCompatibility = "11"
-    targetCompatibility = "11"
+java {
+    sourceCompatibility = VERSION_1_8
+    targetCompatibility = VERSION_1_8
 }
 
 dependencies {
