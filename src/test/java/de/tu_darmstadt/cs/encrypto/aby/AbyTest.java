@@ -55,9 +55,16 @@ class AbyTest {
   void addGate(SharingType sharingType) {
     final BinaryGate gate = Circuit::putADDGate;
     final BinaryOperator<Integer> evaluate = Integer::sum;
+
+    // Positive numbers
     testBinaryGate(gate, evaluate, sharingType, 1, 2);
     testBinaryGate(gate, evaluate, sharingType, 8, 5);
     testBinaryGate(gate, evaluate, sharingType, 120, 348);
+
+    // Negative numbers
+    testBinaryGate(gate, evaluate, sharingType, 2, -2);
+    testBinaryGate(gate, evaluate, sharingType, 2, -4);
+    testBinaryGate(gate, evaluate, sharingType, -2, -2);
   }
 
   @ParameterizedTest
@@ -67,9 +74,17 @@ class AbyTest {
   void subGate(SharingType sharingType) {
     final BinaryGate gate = Circuit::putSUBGate;
     final BinaryOperator<Integer> evaluate = (a, b) -> a - b;
+
+    // Positive numbers
     testBinaryGate(gate, evaluate, sharingType, 2, 1);
     testBinaryGate(gate, evaluate, sharingType, 8, 5);
     testBinaryGate(gate, evaluate, sharingType, 400, 150);
+
+    // Negative numbers
+    testBinaryGate(gate, evaluate, sharingType, 2, 4);
+    testBinaryGate(gate, evaluate, sharingType, -2, 4);
+    testBinaryGate(gate, evaluate, sharingType, 2, -4);
+    testBinaryGate(gate, evaluate, sharingType, -2, -4);
   }
 
   @ParameterizedTest
@@ -79,9 +94,30 @@ class AbyTest {
   void mulGate(SharingType sharingType) {
     final BinaryGate gate = Circuit::putMULGate;
     final BinaryOperator<Integer> evaluate = (a, b) -> a * b;
+
+    // Positive numbers
     testBinaryGate(gate, evaluate, sharingType, 2, 1);
     testBinaryGate(gate, evaluate, sharingType, 8, 5);
     testBinaryGate(gate, evaluate, sharingType, 400, 150);
+
+    // Negative numbers
+    testBinaryGate(gate, evaluate, sharingType, 2, -2);
+    testBinaryGate(gate, evaluate, sharingType, 0, -4);
+    testBinaryGate(gate, evaluate, sharingType, -2, -2);
+  }
+
+  @ParameterizedTest
+  @EnumSource(
+      mode = EnumSource.Mode.EXCLUDE,
+      names = {"S_YAO_REV"})
+  void negativeNumbers(SharingType sharingType) {
+    final CircuitBuilder builder =
+        (circuit) -> {
+          Share serverInputShare = putINGate(circuit, 2, Role.SERVER);
+          Share clientInputShare = putINGate(circuit, 4, Role.CLIENT);
+          return circuit.putSUBGate(serverInputShare, clientInputShare);
+        };
+    testCircuit(builder, sharingType, -2);
   }
 
   @ParameterizedTest
@@ -126,8 +162,15 @@ class AbyTest {
    * bit length.
    */
   private static Share putINGate(Circuit circuit, int value, Role role) {
-    final BigInteger bigValue = BigInteger.valueOf(value);
-    return circuit.putINGate(bigValue, bigValue.bitLength(), role);
+    if (value > 0) {
+      final BigInteger bigValue = BigInteger.valueOf(value);
+      return circuit.putINGate(bigValue, bigValue.bitLength(), role);
+    } else {
+      final int bitLength = 32;
+      final BigInteger bigValue =
+          BigInteger.valueOf(2).pow(bitLength).add(BigInteger.valueOf(value));
+      return circuit.putINGate(bigValue, bitLength, role);
+    }
   }
 
   /** Asserts that the given single output circuit produces the expected result. */
@@ -150,7 +193,7 @@ class AbyTest {
     }
 
     assertEquals(BigInteger.ZERO, serverResult, "Server doesn't see the value");
-    assertEquals(BigInteger.valueOf(expectedResult), clientResult, "Wrong output for client");
+    assertEquals(expectedResult, clientResult.intValue(), "Wrong output for client");
   }
 
   /** Executes the given single output circuit as the given role and returns the result. */
