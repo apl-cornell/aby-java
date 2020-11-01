@@ -7,7 +7,7 @@ set -e
 # shellcheck source=./variables.sh
 . "$(dirname "$0")"/variables.sh
 
-ABY_URL=https://github.com/encryptogroup/ABY
+ABY_URL=https://github.com/apl-cornell/ABY
 echo "ABY Version: $ABY_VERSION"
 
 # Clone the ABY Git repository
