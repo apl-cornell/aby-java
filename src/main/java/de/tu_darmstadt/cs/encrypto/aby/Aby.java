@@ -19,6 +19,11 @@ public class Aby {
     return (cPtr == 0) ? null : new Share(cPtr, false);
   }
 
+  public static Share putInt32DIVGate(Circuit circuit, Share lhs, Share rhs) {
+    long cPtr = AbyJNI.putInt32DIVGate(Circuit.getCPtr(circuit), circuit, Share.getCPtr(lhs), lhs, Share.getCPtr(rhs), rhs);
+    return (cPtr == 0) ? null : new Share(cPtr, false);
+  }
+
   public static SecurityLevel getST() {
     long cPtr = AbyJNI.ST_get();
     return (cPtr == 0) ? null : new SecurityLevel(cPtr, false);

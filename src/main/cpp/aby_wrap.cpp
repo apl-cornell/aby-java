@@ -317,6 +317,7 @@ SWIGINTERN void std_vector_Sl_uint32_t_Sg__doRemoveRange(std::vector< uint32_t >
 
 #include "abycore/aby/abyparty.h"
 #include "abycore/circuit/circuit.h"
+#include "abycore/circuit/extra-gates.h"
 #include "abycore/circuit/share.h"
 #include "abycore/sharing/sharing.h"
 
@@ -1938,6 +1939,27 @@ SWIGEXPORT jlong JNICALL Java_de_tu_1darmstadt_cs_encrypto_aby_AbyJNI_createNewS
   arg1 = *argp1; 
   arg2 = *(Circuit **)&jarg2; 
   result = (share *)create_new_share(arg1,arg2);
+  *(share **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_de_tu_1darmstadt_cs_encrypto_aby_AbyJNI_putInt32DIVGate(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_) {
+  jlong jresult = 0 ;
+  Circuit *arg1 = (Circuit *) 0 ;
+  share *arg2 = (share *) 0 ;
+  share *arg3 = (share *) 0 ;
+  share *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  (void)jarg3_;
+  arg1 = *(Circuit **)&jarg1; 
+  arg2 = *(share **)&jarg2; 
+  arg3 = *(share **)&jarg3; 
+  result = (share *)PutInt32DIVGate(arg1,arg2,arg3);
   *(share **)&jresult = result; 
   return jresult;
 }

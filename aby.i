@@ -79,6 +79,10 @@
 %ignore Circuit::PutPermutationGate;
 
 
+// Additional Gates
+%rename("%(lowercamelcase)s") PutInt32DIVGate;
+
+
 %rename(Share) share;
 // %rename(ArithmeticShare) arithshare;
 // %rename(BooleanShare) boolshare;
@@ -106,6 +110,7 @@
 %{
 #include "abycore/aby/abyparty.h"
 #include "abycore/circuit/circuit.h"
+#include "abycore/circuit/extra-gates.h"
 #include "abycore/circuit/share.h"
 #include "abycore/sharing/sharing.h"
 %}
@@ -113,6 +118,7 @@
 %include "abycore/aby/abyparty.h"
 %include "abycore/ABY_utils/ABYconstants.h"
 %include "abycore/circuit/circuit.h"
+%include "abycore/circuit/extra-gates.h"
 %include "abycore/circuit/share.h"
 %include "ENCRYPTO_utils/constants.h"
 %include "ENCRYPTO_utils/crypto/crypto.h"
