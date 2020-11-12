@@ -324,6 +324,9 @@ SWIGINTERN void std_vector_Sl_uint32_t_Sg__doRemoveRange(std::vector< uint32_t >
 SWIGINTERN Circuit *ABYParty_GetCircuitBuilder(ABYParty *self,e_sharing sharing){
         return self->GetSharings()[sharing]->GetCircuitBuildRoutine();
     }
+SWIGINTERN uint32_t ABYParty_GetNumNonLinearOperations(ABYParty *self,e_sharing sharing){
+        return self->GetSharings()[sharing]->GetNumNonLinearOperations();
+    }
 
 #ifdef __cplusplus
 extern "C" {
@@ -1072,6 +1075,23 @@ SWIGEXPORT jlong JNICALL Java_de_tu_1darmstadt_cs_encrypto_aby_AbyJNI_ABYParty_1
   arg2 = (e_sharing)jarg2; 
   result = (Circuit *)ABYParty_GetCircuitBuilder(arg1,arg2);
   *(Circuit **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_de_tu_1darmstadt_cs_encrypto_aby_AbyJNI_ABYParty_1getNumNonLinearOperations(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jlong jresult = 0 ;
+  ABYParty *arg1 = (ABYParty *) 0 ;
+  e_sharing arg2 ;
+  uint32_t result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ABYParty **)&jarg1; 
+  arg2 = (e_sharing)jarg2; 
+  result = (uint32_t)ABYParty_GetNumNonLinearOperations(arg1,arg2);
+  jresult = (jlong)result; 
   return jresult;
 }
 

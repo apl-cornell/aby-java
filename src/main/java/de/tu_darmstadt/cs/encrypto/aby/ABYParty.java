@@ -109,4 +109,8 @@ public class ABYParty {
     return (cPtr == 0) ? null : new Circuit(cPtr, false);
   }
 
+  public long getNumNonLinearOperations(SharingType sharing) {
+    return AbyJNI.ABYParty_getNumNonLinearOperations(swigCPtr, this, sharing.swigValue());
+  }
+
 }

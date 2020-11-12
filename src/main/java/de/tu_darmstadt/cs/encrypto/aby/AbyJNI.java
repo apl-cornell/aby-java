@@ -42,6 +42,7 @@ public class AbyJNI {
   public final static native long ABYParty_getTotalGates(long jarg1, ABYParty jarg1_);
   public final static native long ABYParty_getTotalDepth(long jarg1, ABYParty jarg1_);
   public final static native long ABYParty_getCircuitBuilder(long jarg1, ABYParty jarg1_, int jarg2);
+  public final static native long ABYParty_getNumNonLinearOperations(long jarg1, ABYParty jarg1_, int jarg2);
   public final static native long Circuit_getShareBitLen(long jarg1, Circuit jarg1_);
   public final static native long Circuit_getMaxDepth(long jarg1, Circuit jarg1_);
   public final static native long Circuit_getNumInputBitsForParty(long jarg1, Circuit jarg1_, int jarg2);
