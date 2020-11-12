@@ -31,6 +31,10 @@
     Circuit* GetCircuitBuilder(e_sharing sharing) {
         return $self->GetSharings()[sharing]->GetCircuitBuildRoutine();
     }
+
+    uint32_t GetNumNonLinearOperations(e_sharing sharing) {
+        return $self->GetSharings()[sharing]->GetNumNonLinearOperations();
+    }
 };
 
 %rename(Circuit) Circuit;
