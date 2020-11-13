@@ -85,6 +85,8 @@
 
 // Additional Gates
 %rename("%(lowercamelcase)s") PutInt32DIVGate;
+%rename("%(lowercamelcase)s") PutMinGate;
+%rename("%(lowercamelcase)s") PutMaxGate;
 
 
 %rename(Share) share;
