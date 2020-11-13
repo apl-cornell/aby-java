@@ -86,6 +86,8 @@ public class AbyJNI {
   public final static native long createNewShare__SWIG_0(long jarg1, long jarg2, Circuit jarg2_);
   public final static native long createNewShare__SWIG_1(long jarg1, UInt32Vector jarg1_, long jarg2, Circuit jarg2_);
   public final static native long putInt32DIVGate(long jarg1, Circuit jarg1_, long jarg2, Share jarg2_, long jarg3, Share jarg3_);
+  public final static native long putMinGate(long jarg1, Circuit jarg1_, long jarg2, Share jarg2_, long jarg3, Share jarg3_);
+  public final static native long putMaxGate(long jarg1, Circuit jarg1_, long jarg2, Share jarg2_, long jarg3, Share jarg3_);
   public final static native long Share_getWires(long jarg1, Share jarg1_);
   public final static native long Share_getWireId(long jarg1, Share jarg1_, long jarg2);
   public final static native long Share_getWireIdsAsShare(long jarg1, Share jarg1_, long jarg2);

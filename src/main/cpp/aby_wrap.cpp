@@ -1985,6 +1985,48 @@ SWIGEXPORT jlong JNICALL Java_de_tu_1darmstadt_cs_encrypto_aby_AbyJNI_putInt32DI
 }
 
 
+SWIGEXPORT jlong JNICALL Java_de_tu_1darmstadt_cs_encrypto_aby_AbyJNI_putMinGate(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_) {
+  jlong jresult = 0 ;
+  Circuit *arg1 = (Circuit *) 0 ;
+  share *arg2 = (share *) 0 ;
+  share *arg3 = (share *) 0 ;
+  share *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  (void)jarg3_;
+  arg1 = *(Circuit **)&jarg1; 
+  arg2 = *(share **)&jarg2; 
+  arg3 = *(share **)&jarg3; 
+  result = (share *)PutMinGate(arg1,arg2,arg3);
+  *(share **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_de_tu_1darmstadt_cs_encrypto_aby_AbyJNI_putMaxGate(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_) {
+  jlong jresult = 0 ;
+  Circuit *arg1 = (Circuit *) 0 ;
+  share *arg2 = (share *) 0 ;
+  share *arg3 = (share *) 0 ;
+  share *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  (void)jarg3_;
+  arg1 = *(Circuit **)&jarg1; 
+  arg2 = *(share **)&jarg2; 
+  arg3 = *(share **)&jarg3; 
+  result = (share *)PutMaxGate(arg1,arg2,arg3);
+  *(share **)&jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT jlong JNICALL Java_de_tu_1darmstadt_cs_encrypto_aby_AbyJNI_Share_1getWires(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jlong jresult = 0 ;
   share *arg1 = (share *) 0 ;
