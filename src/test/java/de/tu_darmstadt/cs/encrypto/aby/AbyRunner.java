@@ -2,22 +2,21 @@ package de.tu_darmstadt.cs.encrypto.aby;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 class AbyRunner {
-  private final ABYParty abyParty;
   private final Thread thread;
-  private final BlockingQueue<Function<ABYParty, Long>> input = new LinkedBlockingQueue<>();
+  private final BlockingQueue<BiFunction<ABYParty, Role, Long>> input = new LinkedBlockingQueue<>();
   private final BlockingQueue<Long> output = new LinkedBlockingQueue<>();
 
   public AbyRunner(Role role, String address, int port) {
-    abyParty = new ABYParty(role, address, port, Aby.getLT(), 32, 1);
+    final ABYParty abyParty = new ABYParty(role, address, port, Aby.getLT(), 32, 1);
     thread =
         new Thread(
             () -> {
               while (true) {
                 try {
-                  output.put(input.take().apply(abyParty));
+                  output.put(input.take().apply(abyParty, role));
                 } catch (InterruptedException e) {
                   // Stop was called.
                 }
@@ -27,7 +26,7 @@ class AbyRunner {
     thread.start();
   }
 
-  public void put(Function<ABYParty, Long> command) throws InterruptedException {
+  public void put(BiFunction<ABYParty, Role, Long> command) throws InterruptedException {
     input.put(command);
   }
 

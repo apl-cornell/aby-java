@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
-import java.util.function.Function;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -153,16 +153,19 @@ class AbyTest {
   /** Asserts that the given single-output circuit produces the expected result. */
   private static void testCircuit(
       CircuitBuilder circuitBuilder, SharingType sharingType, int expectedResult) {
-    final Function<ABYParty, Long> command =
-        (abyParty) -> {
+    // The party that will receive the output.
+    final Role receiver = Role.CLIENT;
+
+    final BiFunction<ABYParty, Role, Long> command =
+        (abyParty, role) -> {
           // Build the circuit
           final Circuit circuit = abyParty.getCircuitBuilder(sharingType);
           final Share intermediateShare = circuitBuilder.build(circuit);
-          final Share resultShare = circuit.putOUTGate(intermediateShare, Role.ALL);
+          final Share resultShare = circuit.putOUTGate(intermediateShare, receiver);
 
           // Retrieve circuit output
           abyParty.execCircuit();
-          final long result = resultShare.getClearValue32();
+          final long result = role.equals(receiver) ? resultShare.getClearValue32() : 0;
           abyParty.reset();
           return result;
         };
@@ -171,7 +174,7 @@ class AbyTest {
       client.put(command);
       server.put(command);
       assertEquals(expectedResult, (int) client.get(), "Wrong output for client");
-      assertEquals(expectedResult, (int) server.get(), "Wrong output for server");
+      assertEquals(0, (int) server.get(), "Server does not receive the output");
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     }
