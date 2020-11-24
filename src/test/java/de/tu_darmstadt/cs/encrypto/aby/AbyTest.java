@@ -5,39 +5,30 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.concurrent.*;
 import java.util.function.BinaryOperator;
+import java.util.function.Function;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.util.SocketUtils;
 
 class AbyTest {
-  private static String address;
-  private static int port;
-  private static ExecutorService executorService;
+  private static AbyRunner client;
+  private static AbyRunner server;
 
   @BeforeAll
   static void initialize() throws UnknownHostException {
-    address = InetAddress.getByName("localhost").getHostAddress();
-    port = SocketUtils.findAvailableTcpPort();
-    executorService = Executors.newCachedThreadPool();
+    final String address = InetAddress.getByName("localhost").getHostAddress();
+    final int port = SocketUtils.findAvailableTcpPort();
+    client = new AbyRunner(Role.CLIENT, address, port);
+    server = new AbyRunner(Role.SERVER, address, port);
   }
 
   @AfterAll
   static void shutdown() {
-    executorService.shutdown();
-  }
-
-  @Test
-  void emptyCircuit() {
-    ABYParty server = new ABYParty(Role.SERVER, address, port);
-    ABYParty client = new ABYParty(Role.CLIENT, address, port);
-
-    client.delete();
-    server.delete();
+    client.stop();
+    server.stop();
   }
 
   @ParameterizedTest
@@ -109,20 +100,6 @@ class AbyTest {
   @ParameterizedTest
   @EnumSource(
       mode = EnumSource.Mode.EXCLUDE,
-      names = {"S_YAO_REV"})
-  void negativeNumbers(SharingType sharingType) {
-    final CircuitBuilder builder =
-        (circuit) -> {
-          Share serverInputShare = putINGate(circuit, 2, Role.SERVER);
-          Share clientInputShare = putINGate(circuit, 4, Role.CLIENT);
-          return circuit.putSUBGate(serverInputShare, clientInputShare);
-        };
-    testCircuit(builder, sharingType, -2);
-  }
-
-  @ParameterizedTest
-  @EnumSource(
-      mode = EnumSource.Mode.EXCLUDE,
       names = {"S_ARITH", "S_YAO_REV"})
   void andGate(SharingType sharingType) {
     final BinaryGate gate = Circuit::putANDGate;
@@ -173,50 +150,30 @@ class AbyTest {
     }
   }
 
-  /** Asserts that the given single output circuit produces the expected result. */
+  /** Asserts that the given single-output circuit produces the expected result. */
   private static void testCircuit(
       CircuitBuilder circuitBuilder, SharingType sharingType, int expectedResult) {
-    // Run the code of each party in a separate thread.
-    final Future<BigInteger> serverFuture =
-        executorService.submit(runCircuitAs(Role.SERVER, circuitBuilder, sharingType));
-    final Future<BigInteger> clientFuture =
-        executorService.submit(runCircuitAs(Role.CLIENT, circuitBuilder, sharingType));
+    final Function<ABYParty, Long> command =
+        (abyParty) -> {
+          // Build the circuit
+          final Circuit circuit = abyParty.getCircuitBuilder(sharingType);
+          final Share intermediateShare = circuitBuilder.build(circuit);
+          final Share resultShare = circuit.putOUTGate(intermediateShare, Role.ALL);
 
-    // Retrieve each party's result.
-    final BigInteger serverResult;
-    final BigInteger clientResult;
+          // Retrieve circuit output
+          abyParty.execCircuit();
+          final long result = resultShare.getClearValue32();
+          abyParty.reset();
+          return result;
+        };
+
     try {
-      serverResult = serverFuture.get();
-      clientResult = clientFuture.get();
-    } catch (InterruptedException | ExecutionException e) {
-      throw new Error(e);
+      client.put(command);
+      server.put(command);
+      assertEquals(expectedResult, (int) client.get(), "Wrong output for client");
+      assertEquals(expectedResult, (int) server.get(), "Wrong output for server");
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
     }
-
-    assertEquals(BigInteger.ZERO, serverResult, "Server doesn't see the value");
-    assertEquals(expectedResult, clientResult.intValue(), "Wrong output for client");
-  }
-
-  /** Executes the given single output circuit as the given role and returns the result. */
-  private static Callable<BigInteger> runCircuitAs(
-      Role role, CircuitBuilder circuitBuilder, SharingType sharingType) {
-    return () -> {
-      // The party that will receive the output.
-      final Role receiver = Role.CLIENT;
-
-      final ABYParty party = new ABYParty(role, address, port, Aby.getLT(), 32, 1);
-
-      // Build the circuit
-      final Circuit circuit = party.getCircuitBuilder(sharingType);
-      final Share intermediateShare = circuitBuilder.build(circuit);
-      final Share resultShare = circuit.putOUTGate(intermediateShare, receiver);
-
-      // Retrieve circuit output
-      party.execCircuit();
-      final BigInteger result =
-          role.equals(receiver) ? resultShare.getClearValue64() : BigInteger.ZERO;
-
-      party.delete();
-      return result;
-    };
   }
 }
