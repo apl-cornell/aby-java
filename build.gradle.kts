@@ -51,6 +51,10 @@ spotless {
         targetExclude("$abyPath/*.java")
         googleJavaFormat()
     }
+
+    kotlinGradle {
+        ktlint()
+    }
 }
 
 /** Testing */
@@ -79,80 +83,35 @@ publishing {
 
 /** Building Native Binaries */
 
+val aby = Library(
+    name = "ABY", group = abyGroup, version = abyVersion, url = "https://github.com/apl-cornell/ABY"
+)
+
 val downloadDir = buildDir.resolve("downloaded-src")
 val generatedSourcesDir = buildDir.resolve("generated-src")
 val generatedResourcesDir = buildDir.resolve("generated-resources")
 
-val abyUrl = "https://github.com/apl-cornell/ABY"
-
-val downloadAby by tasks.registering {
-    description = "Downloads the ABY source code"
-
-    val output = downloadDir.resolve("ABY-$abyVersion")
-    outputs.dir(output)
-
-    fun git(vararg args: String, wd: File = output) =
-        exec {
-            workingDir = wd
-            commandLine = listOf("git") + args
-        }
-
-    doLast {
-        mkdir(output)
-        git("init")
-        git("fetch", "--depth", "1", abyUrl, abyVersion)
-        git("checkout", abyVersion)
-        git("submodule", "update", "--init", "--depth", "1")
-        git("submodule", "update", "--init", "--depth", "1", wd = output.resolve("extern/ENCRYPTO_utils"))
-    }
+val downloadAby by tasks.registering(DownloadLibraryTask::class) {
+    library.set(aby)
+    submodules.addAll(
+        "extern/ENCRYPTO_utils",
+        "extern/ENCRYPTO_utils:extern/relic",
+        "extern/OTExtension"
+    )
 }
 
-val patchAby by tasks.registering {
-    description = "Patches the ABY source code"
-
-    val input = downloadAby.get().outputs.files.singleFile
-    val output = downloadDir.resolve("patched-ABY-$abyVersion")
-    inputs.dir(input)
-    outputs.dir(output)
+val patchAby by tasks.registering(PatchTask::class) {
+    description = "Patches ABY source code."
     dependsOn(downloadAby)
 
-    doLast {
-        copy {
-            from(input)
-            into(output)
-        }
-
-        exec {
-            workingDir = output
-            commandLine = listOf("git", "apply", project.file("aby.patch").path)
-        }
-    }
+    from.set(downloadAby.get().outputDirectory)
+    patch.set(project.file("${aby.name}.patch"))
 }
 
-val swigABY by tasks.registering {
-    description = "Generates the Java interface using SWIG"
-
-    val input = patchAby.get().outputs.files.singleFile
-    val abyPackage = "$abyGroup.aby"
-    val javaOutput = generatedSourcesDir.resolve("swig/java/${abyPackage.replace(".", "/")}")
-    val cppOutput = generatedSourcesDir.resolve("swig/cpp/aby_wrap.cpp")
-
-    inputs.dir(input)
-    outputs.dir(javaOutput)
-    outputs.file(cppOutput)
+val swigAby by tasks.registering(SwigLibraryTask::class) {
     dependsOn(patchAby)
 
-    doLast {
-        exec {
-            commandLine = listOf(
-                "swig",
-                "-Wall", "-Werror", "-macroerrors",
-                "-c++",
-                "-java", "-package", abyPackage,
-                "-I$input/src", "-I$input/extern/ENCRYPTO_utils/src",
-                "-o", cppOutput.path, "-outdir", javaOutput.path,
-                "aby.i"
-            )
-        }
-    }
+    library.set(aby)
+    source.set(patchAby.get().outputDirectory)
+    includeDirectories.addAll("src", "extern/ENCRYPTO_utils/src")
 }
