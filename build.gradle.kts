@@ -76,3 +76,55 @@ publishing {
         }
     }
 }
+
+/** Building Native Binaries */
+
+val downloadDir = buildDir.resolve("downloaded-src")
+val generatedSourcesDir = buildDir.resolve("generated-src")
+val generatedResourcesDir = buildDir.resolve("generated-resources")
+
+val abyUrl = "https://github.com/apl-cornell/ABY"
+
+val downloadAby by tasks.registering {
+    description = "Downloads the ABY source code"
+
+    val output = downloadDir.resolve("ABY-$abyVersion")
+    outputs.dir(output)
+
+    fun git(vararg args: String, wd: File = output) =
+        exec {
+            workingDir = wd
+            commandLine = listOf("git") + args
+        }
+
+    doLast {
+        mkdir(output)
+        git("init")
+        git("fetch", "--depth", "1", abyUrl, abyVersion)
+        git("checkout", abyVersion)
+        git("submodule", "update", "--init", "--depth", "1")
+        git("submodule", "update", "--init", "--depth", "1", wd = output.resolve("extern/ENCRYPTO_utils"))
+    }
+}
+
+val patchAby by tasks.registering {
+    description = "Patches the ABY source code"
+
+    val input = downloadAby.get().outputs.files.singleFile
+    val output = downloadDir.resolve("patched-ABY-$abyVersion")
+    inputs.dir(input)
+    outputs.dir(output)
+    dependsOn(downloadAby)
+
+    doLast {
+        copy {
+            from(input)
+            into(output)
+        }
+
+        exec {
+            workingDir = output
+            commandLine = listOf("git", "apply", project.file("aby.patch").path)
+        }
+    }
+}
