@@ -128,3 +128,31 @@ val patchAby by tasks.registering {
         }
     }
 }
+
+val swigABY by tasks.registering {
+    description = "Generates the Java interface using SWIG"
+
+    val input = patchAby.get().outputs.files.singleFile
+    val abyPackage = "$abyGroup.aby"
+    val javaOutput = generatedSourcesDir.resolve("swig/java/${abyPackage.replace(".", "/")}")
+    val cppOutput = generatedSourcesDir.resolve("swig/cpp/aby_wrap.cpp")
+
+    inputs.dir(input)
+    outputs.dir(javaOutput)
+    outputs.file(cppOutput)
+    dependsOn(patchAby)
+
+    doLast {
+        exec {
+            commandLine = listOf(
+                "swig",
+                "-Wall", "-Werror", "-macroerrors",
+                "-c++",
+                "-java", "-package", abyPackage,
+                "-I$input/src", "-I$input/extern/ENCRYPTO_utils/src",
+                "-o", cppOutput.path, "-outdir", javaOutput.path,
+                "aby.i"
+            )
+        }
+    }
+}
