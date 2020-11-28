@@ -1,3 +1,5 @@
+package edu.cornell.cs.apl.nativetools
+
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
 

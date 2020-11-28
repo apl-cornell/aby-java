@@ -1,3 +1,7 @@
+import edu.cornell.cs.apl.nativetools.DownloadLibraryTask
+import edu.cornell.cs.apl.nativetools.Library
+import edu.cornell.cs.apl.nativetools.PatchTask
+import edu.cornell.cs.apl.nativetools.SwigLibraryTask
 import org.gradle.api.JavaVersion.VERSION_1_8
 
 plugins {
