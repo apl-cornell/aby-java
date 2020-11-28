@@ -16,5 +16,5 @@ data class Library(
 ) {
     @get:Internal
     val packageName: String
-        get() = "$group.${name.toLowerCase()}"
+        get() = "$group.${name.toLowerCase().replace("-", "_")}"
 }

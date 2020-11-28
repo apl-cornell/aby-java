@@ -29,14 +29,14 @@ abstract class SwigLibraryTask : DefaultTask() {
     @get:OutputFile
     val cppOutput: File
         get() {
-            val dir = project.buildDir.resolve(generatedSrcBaseDir).resolve("cpp").resolve(packageDir)
+            val dir = project.buildDir.resolve(generatedSrcBaseDir).resolve("cpp/main").resolve(packageDir)
             val fileName = "${library.get().name}-wrap.cpp"
             return dir.resolve(fileName)
         }
 
     @get:OutputDirectory
     val javaOutputDirectory: File
-        get() = project.buildDir.resolve(generatedSrcBaseDir).resolve("java").resolve(packageDir)
+        get() = project.buildDir.resolve(generatedSrcBaseDir).resolve("java/main").resolve(packageDir)
 
     @Internal
     override fun getDescription(): String {
@@ -64,6 +64,6 @@ abstract class SwigLibraryTask : DefaultTask() {
             library.get().packageName.replace(".", "/")
 
     companion object {
-        const val generatedSrcBaseDir: String = "generated-src/swig"
+        const val generatedSrcBaseDir: String = "generated/sources/swig"
     }
 }
