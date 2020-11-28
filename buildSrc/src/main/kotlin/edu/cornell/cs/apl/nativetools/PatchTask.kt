@@ -1,11 +1,13 @@
 package edu.cornell.cs.apl.nativetools
 
-import java.io.File
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
@@ -22,11 +24,16 @@ abstract class PatchTask : DefaultTask() {
     abstract val into: DirectoryProperty
 
     @get:OutputDirectory
-    val outputDirectory: File
+    val outputDirectory: Provider<Directory>
         get() {
-            val from = from.get().asFile
-            return into.asFile.getOrElse(from.parentFile.resolve("patch-${from.name}"))
+            val default = from.map { it.dir("../patch-${it.asFile.name}") }
+            @Suppress("UnstableApiUsage")
+            return into.orElse(default)
         }
+
+    @Internal
+    override fun getGroup(): String =
+        SwigLibraryPlugin.taskGroup
 
     @TaskAction
     fun patch() {
@@ -36,7 +43,7 @@ abstract class PatchTask : DefaultTask() {
         }
 
         project.exec {
-            workingDir = outputDirectory
+            workingDir = outputDirectory.get().asFile
             commandLine = listOf("git", "apply", "${patch.get()}")
         }
     }

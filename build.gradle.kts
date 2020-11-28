@@ -1,7 +1,4 @@
-import edu.cornell.cs.apl.nativetools.DownloadLibraryTask
 import edu.cornell.cs.apl.nativetools.Library
-import edu.cornell.cs.apl.nativetools.PatchTask
-import edu.cornell.cs.apl.nativetools.SwigLibraryTask
 import org.gradle.api.JavaVersion.VERSION_1_8
 
 plugins {
@@ -11,7 +8,11 @@ plugins {
     // Style checking
     id("com.diffplug.spotless") version "5.1.0"
 
+    // Testing
     jacoco
+
+    // Generating Native Libraries
+    `swig-library`
 }
 
 val abyGroup: String by project
@@ -87,35 +88,19 @@ publishing {
 
 /** Building Native Binaries */
 
-val aby = Library(
-    name = "ABY", group = abyGroup, version = abyVersion, url = "https://github.com/apl-cornell/ABY"
-)
-
-val downloadDir = buildDir.resolve("downloaded-src")
-val generatedSourcesDir = buildDir.resolve("generated-src")
-val generatedResourcesDir = buildDir.resolve("generated-resources")
-
-val downloadAby by tasks.registering(DownloadLibraryTask::class) {
-    library.set(aby)
-    submodules.addAll(
-        "extern/ENCRYPTO_utils",
-        "extern/ENCRYPTO_utils:extern/relic",
-        "extern/OTExtension"
+swigLibrary {
+    libraries.add(
+        Library(
+            name = "ABY",
+            group = abyGroup,
+            version = abyVersion,
+            url = "https://github.com/apl-cornell/ABY",
+            submodules = listOf(
+                "extern/ENCRYPTO_utils",
+                "extern/ENCRYPTO_utils:extern/relic",
+                "extern/OTExtension"
+            ),
+            includeDirectories = listOf("src", "extern/ENCRYPTO_utils/src")
+        )
     )
-}
-
-val patchAby by tasks.registering(PatchTask::class) {
-    description = "Patches ABY source code."
-    dependsOn(downloadAby)
-
-    from.set(downloadAby.get().outputDirectory)
-    patch.set(project.file("${aby.name}.patch"))
-}
-
-val swigAby by tasks.registering(SwigLibraryTask::class) {
-    dependsOn(patchAby)
-
-    library.set(aby)
-    source.set(patchAby.get().outputDirectory)
-    includeDirectories.addAll("src", "extern/ENCRYPTO_utils/src")
 }

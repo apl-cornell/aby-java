@@ -14,7 +14,13 @@ data class Library(
     val version: String,
 
     @Internal
-    val url: String
+    val url: String,
+
+    @Input
+    val submodules: Iterable<String> = listOf(),
+
+    @Input
+    val includeDirectories: Iterable<String> = listOf()
 ) {
     @get:Internal
     val packageName: String

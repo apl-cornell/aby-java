@@ -1,10 +1,9 @@
 package edu.cornell.cs.apl.nativetools
 
-import java.io.File
 import org.gradle.api.DefaultTask
-import org.gradle.api.provider.ListProperty
+import org.gradle.api.file.Directory
 import org.gradle.api.provider.Property
-import org.gradle.api.tasks.Input
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.OutputDirectory
@@ -14,17 +13,20 @@ abstract class DownloadLibraryTask : DefaultTask() {
     @get:Nested
     abstract val library: Property<Library>
 
-    @get:Input
-    abstract val submodules: ListProperty<String>
-
     @get:OutputDirectory
-    val outputDirectory: File
-        get() = project.buildDir.resolve("downloaded-src/${library.get().name}-${library.get().version}")
+    val outputDirectory: Provider<Directory>
+        get() {
+            val downloadDir = library.map { "downloaded-src/${it.name}-${it.version}" }
+            return project.layout.buildDirectory.dir(downloadDir)
+        }
 
     @Internal
-    override fun getDescription(): String {
-        return "Downloads ${library.get().name} source code."
-    }
+    override fun getDescription(): String =
+        "Downloads ${library.get().name} source code."
+
+    @Internal
+    override fun getGroup(): String =
+        SwigLibraryPlugin.taskGroup
 
     @TaskAction
     fun download() {
@@ -32,20 +34,20 @@ abstract class DownloadLibraryTask : DefaultTask() {
         git("init")
         git("fetch", "--depth", "1", library.get().url, library.get().version)
         git("checkout", library.get().version)
-        submodules.get().forEach { submodule ->
-            var parentSubmodule = File("")
+        library.get().submodules.forEach { submodule ->
+            var parentSubmodule = outputDirectory.get()
             val parts = submodule.split(":")
             assert(parts.isNotEmpty())
             parts.forEach { part ->
-                git("submodule", "update", "--init", "--depth", "1", part, cd = parentSubmodule)
-                parentSubmodule = parentSubmodule.resolve(part)
+                git("submodule", "update", "--init", "--depth", "1", part, workingDir = parentSubmodule)
+                parentSubmodule = parentSubmodule.dir(part)
             }
         }
     }
 
-    private fun git(vararg args: String, cd: File = File("")) =
+    private fun git(vararg args: String, workingDir: Directory = outputDirectory.get()) =
         project.exec {
-            workingDir = outputDirectory.resolve(cd)
+            this.workingDir = workingDir.asFile
             commandLine = listOf("git") + args
         }
 }
