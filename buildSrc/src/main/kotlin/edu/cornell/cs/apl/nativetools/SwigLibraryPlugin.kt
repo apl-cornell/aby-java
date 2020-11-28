@@ -24,9 +24,16 @@ class SwigLibraryPlugin : Plugin<Project> {
                     patch.set(project.file("${library.name}.patch"))
                 }
 
-                project.tasks.register<SwigLibraryTask>("swig${library.name}") {
+                val swig = project.tasks.register<SwigLibraryTask>("swig${library.name}") {
                     this.library.set(library)
                     source.set(patch.map { it.outputDirectory.get() })
+                }
+
+                project.tasks.register<DockerSwigLibraryTask>("dockerSwig${library.name}") {
+                    this.library.set(library)
+                    patchFile.set(patch.get().patch.get())
+                    interfaceFile.set(swig.get().interfaceFile.get())
+                    javaOutputDirectory.set(swig.get().javaOutputDirectory.get())
                 }
             }
         }

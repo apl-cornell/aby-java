@@ -6,26 +6,22 @@ WORKDIR /root
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     git \
+    openjdk-11-jdk-headless \
     swig \
     && rm -rf /var/lib/apt/lists/*
 
+# Have Gradle Wrapper download the Gradle binary
+COPY gradlew .
+COPY gradle gradle
+RUN ./gradlew --version
+
 # Copy configuration
-COPY gradle.properties .
-COPY scripts/variables.sh scripts/
-
-# Download ABY source code
-COPY scripts/get_aby.sh scripts/
-RUN scripts/get_aby.sh
-
-# Apply our patch to ABY sources
-COPY ABY.patch .
-COPY scripts/patch_aby.sh scripts/
-RUN scripts/patch_aby.sh
+COPY gradle.properties *.gradle.kts ./
+COPY buildSrc buildSrc
 
 # Generate the Java interface
-COPY aby.i .
-COPY scripts/generate_java_interface.sh scripts/
-RUN scripts/generate_java_interface.sh
+COPY ABY.i ABY.patch ./
+RUN ./gradlew swigABY
 
 
 # Build the Linux binary

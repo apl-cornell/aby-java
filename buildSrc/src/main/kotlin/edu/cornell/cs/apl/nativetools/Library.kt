@@ -20,7 +20,7 @@ data class Library(
     val submodules: Iterable<String> = listOf(),
 
     @Input
-    val includeDirectories: Iterable<String> = listOf()
+    val includeDirectories: Iterable<String>
 ) {
     @get:Internal
     val packageName: String

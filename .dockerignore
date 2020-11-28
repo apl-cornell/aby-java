@@ -1,16 +1,19 @@
 # Ignore everything by default. So this is a "Docker include" file.
 *
 
+# Gradle
+!gradle
+!gradlew
+!buildSrc/src
+!buildSrc/*.gradle.kts
 !gradle.properties
-!scripts
+!*.gradle.kts
+
+!ABY.i
 !ABY.patch
 
-!aby.i
 !CMakeLists.txt
 !external/Makefile
 
-# For testing
-!*.gradle.kts
-!gradle
-!gradlew
+# Testing
 !src/test
