@@ -52,8 +52,7 @@ dependencies {
 
 spotless {
     java {
-        val abyPath = "src/main/java/$group/aby".replace(".", "/")
-        targetExclude("$abyPath/*.java")
+        targetExclude("${project.relativePath(project.layout.buildDirectory)}/**/*.java")
         googleJavaFormat()
     }
 

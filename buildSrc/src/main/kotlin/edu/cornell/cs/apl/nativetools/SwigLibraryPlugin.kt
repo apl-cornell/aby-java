@@ -2,7 +2,10 @@ package edu.cornell.cs.apl.nativetools
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.tasks.SourceSet
+import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.register
 
 class SwigLibraryPlugin : Plugin<Project> {
@@ -20,12 +23,15 @@ class SwigLibraryPlugin : Plugin<Project> {
                     interfaceFile.set(project.file("${library.name}.i"))
                 }
 
-                project.tasks.register<DockerCopyTask>("dockerSwig${library.name}") {
+                val swig = project.tasks.register<DockerCopyTask>("dockerSwig${library.name}") {
                     baseDirectory.set(collect.map { it.outputDirectory.get() })
                     target.set("swig")
                     outputDirectory.set(collect.map { it.generatedJavaBaseDir.get() })
                 }
 
+                project.extensions.getByType<SourceSetContainer>().named(SourceSet.MAIN_SOURCE_SET_NAME) {
+                    java.srcDir { swig.map { it.outputDirectory.get() } }
+                }
             }
         }
     }
