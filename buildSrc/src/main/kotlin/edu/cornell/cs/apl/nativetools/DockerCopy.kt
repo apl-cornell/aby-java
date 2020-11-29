@@ -7,10 +7,10 @@ import org.gradle.api.Project
 import org.gradle.api.file.RegularFile
 
 /** Builds a Docker image and copies files from the image to local host. */
-fun Project.dockerCopy(
+internal fun Project.dockerCopy(
     from: String,
     to: String,
-    dockerfile: RegularFile = this.layout.projectDirectory.file("Dockerfile"),
+    dockerfile: RegularFile,
     target: String
 ) {
     fun docker(vararg arguments: String): String {
@@ -30,9 +30,9 @@ fun Project.dockerCopy(
     val containerID = docker("create", imageID).trim()
 
     try {
-        val toDir = File(to).parent
-        mkdir(toDir)
-        docker("cp", "$containerID:$from", toDir)
+        project.delete(to)
+        mkdir(File(to).parent)
+        docker("cp", "$containerID:$from", to)
     } finally {
         docker("rm", containerID)
     }
