@@ -12,13 +12,12 @@ jobs:
       matrix:
         os:
           - macos-10.15
-          - macos-11.0
           - ubuntu-16.04
           - ubuntu-18.04
           - ubuntu-20.04
         java:
           - 11
-          - 14
+          # - 14
 
     steps:
       - uses: actions/checkout@v2
@@ -26,6 +25,13 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java }}
+      - name: Install Docker
+        if: runner.os == 'macOS'
+        run: |
+          brew install docker docker-machine
+          docker-machine create --driver virtualbox default
+          docker-machine env default
+          docker-machine env default | head -n 4 | cut -f 2- -d ' ' | sed 's/"//g' >> $GITHUB_ENV
       - name: Build with Gradle
         uses: eskatos/gradle-command-action@v1
         with:
