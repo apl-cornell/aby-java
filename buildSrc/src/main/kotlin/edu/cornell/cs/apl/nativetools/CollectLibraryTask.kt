@@ -1,8 +1,9 @@
 package edu.cornell.cs.apl.nativetools
 
 import edu.cornell.cs.apl.nativetools.templates.LibraryConstants
-import edu.cornell.cs.apl.nativetools.templates.buildMakefile
+import edu.cornell.cs.apl.nativetools.templates.dockerignore
 import edu.cornell.cs.apl.nativetools.templates.getMakefile
+import edu.cornell.cs.apl.nativetools.templates.swigMakefile
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.Directory
 import org.gradle.api.file.RegularFile
@@ -48,14 +49,14 @@ abstract class CollectLibraryTask : DefaultTask() {
     fun collect() {
         val constants = LibraryConstants(library.get())
 
-        outputDirectory.addFile(patchFile, "lib", "patch")
-        outputDirectory.addFile(interfaceFile, "lib", "i")
-        outputDirectory.addFile(conanFile, "conanfile")
+        outputDirectory.addFile(patchFile, constants.patchFile)
+        outputDirectory.addFile(interfaceFile, constants.swigFile)
+        outputDirectory.addFile(conanFile, "conanfile.${conanFile.get().asFile.extension}")
 
         getMakefile.generate(constants, outputDirectory)
-        buildMakefile.generate(constants, outputDirectory)
+        swigMakefile.generate(constants, outputDirectory)
         outputDirectory.writeResource("Dockerfile")
-        outputDirectory.writeResource(".dockerignore")
+        dockerignore.generate(constants, outputDirectory)
     }
 
     /** Copies Java resource named [resource] into this directory. */
@@ -64,20 +65,13 @@ abstract class CollectLibraryTask : DefaultTask() {
             CollectLibraryTask::class.java.getResource(resource).readBytes()
         )
 
-    /**
-     * Copies [file] into this directory and renames it to [name].[extension].
-     * The original file extension is preserved when no extension is specified.
-     */
-    private fun Provider<Directory>.addFile(
-        file: Provider<RegularFile>,
-        name: String,
-        extension: String = file.get().asFile.extension
-    ) {
+    /** Copies [file] into this directory and renames it to [name]. */
+    private fun Provider<Directory>.addFile(file: Provider<RegularFile>, name: String) {
         val directory = this
         project.copy {
             from(file)
             into(directory)
-            rename { "$name.$extension" }
+            rename { name }
         }
     }
 }

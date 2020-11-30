@@ -1,9 +1,13 @@
 package edu.cornell.cs.apl.nativetools.templates
 
 /** Makefile for building the library. */
-internal val buildMakefile = Makefile("build.mk") {
+internal val swigMakefile = Makefile("swig.mk") {
     val includes = library.includeDirectories.joinToString(" ") { "-I$</$it" }
     """
+    .PHONY: swig
+    swig: $swigGeneratedCppFile \
+          $swigGeneratedJavaDirectory
+
     include ${getMakefile.name}
 
     $patchedSourceDirectory: $originalSourceDirectory $patchFile
@@ -21,11 +25,8 @@ internal val buildMakefile = Makefile("build.mk") {
             -c++ \
             -java -package ${library.packageName} \
             $includes \
-            -o $swigGeneratedCppFile -outdir $swigGeneratedJavaDirectory \
+            -o $swigGeneratedCppFile \
+            -outdir $swigGeneratedJavaDirectory \
             $swigFile
-
-    .PHONY: swig
-    swig: $swigGeneratedCppFile \
-          $swigGeneratedJavaDirectory
     """
 }
