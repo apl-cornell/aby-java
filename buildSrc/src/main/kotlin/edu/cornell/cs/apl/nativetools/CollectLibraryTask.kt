@@ -36,27 +36,6 @@ abstract class CollectLibraryTask : DefaultTask() {
             return project.layout.buildDirectory.dir("tmp/native-tools").dir(nameVersion)
         }
 
-    private val generatedBaseDir: Provider<Directory>
-        get() {
-            val nameVersion = library.map { "${it.name}-${it.version}" }
-            return project.layout.buildDirectory.dir(SwigLibraryPlugin.generatedSrcBaseDir).dir(nameVersion)
-        }
-
-    @get:Internal
-    val generatedJavaBaseDir: Provider<Directory>
-        get() = generatedBaseDir.dir("java")
-
-    private val generatedJavaDir: Provider<Directory>
-        get() = generatedJavaBaseDir.dir(packageDir)
-
-    private val generatedCppFile: Provider<RegularFile>
-        get() = generatedBaseDir.dir("cpp").file("wrapper.cpp")
-
-    private val packageDir: Provider<String>
-        get() =
-            library.map { it.packageName.replace(".", "/") }
-
-
     @Internal
     override fun getDescription(): String =
         "Collects files needed to build ${library.get().name} using Docker."

@@ -12,7 +12,7 @@ class LibraryConstants(val library: Library) {
     val swigFile: String
         get() = "lib.i"
 
-    private val buildDirectory: String
+    val buildDirectory: String
         get() = "build"
 
     private val cmakeBuildDirectory: String

@@ -11,14 +11,21 @@ import org.gradle.api.tasks.TaskAction
 
 /** Builds a Docker image and copies generated files out. */
 abstract class DockerCopyTask : DefaultTask() {
+    /** Directory that contains the Docker file. */
     @get:InputDirectory
     abstract val baseDirectory: DirectoryProperty
 
+    /** The Docker target. */
     @get:Input
     abstract val target: Property<String>
 
+    /** Path to the directory in the Docker image to copy. */
+    @get:Input
+    abstract val from: Property<String>
+
+    /** Local directory where the contents of the [from] directory will be placed in. */
     @get:OutputDirectory
-    abstract val outputDirectory: DirectoryProperty
+    abstract val into: DirectoryProperty
 
     @Internal
     override fun getGroup(): String =
@@ -26,10 +33,9 @@ abstract class DockerCopyTask : DefaultTask() {
 
     @TaskAction
     fun swigLibrary() {
-        val relativeDir = project.relativePath(outputDirectory)
         project.dockerCopy(
-            from = "/root/$relativeDir",
-            to = "${outputDirectory.get()}",
+            from = from.get(),
+            to = "${into.get()}",
             dockerfile = baseDirectory.file("Dockerfile").get(),
             target = target.get()
         )
