@@ -1,6 +1,8 @@
 package edu.cornell.cs.apl.nativetools
 
-import java.io.File
+import edu.cornell.cs.apl.nativetools.templates.LibraryConstants
+import edu.cornell.cs.apl.nativetools.templates.buildMakefile
+import edu.cornell.cs.apl.nativetools.templates.getMakefile
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.Directory
 import org.gradle.api.file.RegularFile
@@ -24,11 +26,13 @@ abstract class CollectLibraryTask : DefaultTask() {
     @get:InputFile
     abstract val interfaceFile: RegularFileProperty
 
+    @get:InputFile
+    abstract val conanFile: RegularFileProperty
+
     @get:OutputDirectory
     val outputDirectory: Provider<Directory>
         get() {
             val nameVersion = library.map { "${it.name}-${it.version}" }
-            @Suppress("UnstableApiUsage")
             return project.layout.buildDirectory.dir("tmp/native-tools").dir(nameVersion)
         }
 
@@ -48,6 +52,11 @@ abstract class CollectLibraryTask : DefaultTask() {
     private val generatedCppFile: Provider<RegularFile>
         get() = generatedBaseDir.dir("cpp").file("wrapper.cpp")
 
+    private val packageDir: Provider<String>
+        get() =
+            library.map { it.packageName.replace(".", "/") }
+
+
     @Internal
     override fun getDescription(): String =
         "Collects files needed to build ${library.get().name} using Docker."
@@ -58,81 +67,16 @@ abstract class CollectLibraryTask : DefaultTask() {
 
     @TaskAction
     fun collect() {
-        project.copy {
-            from(patchFile)
-            into(outputDirectory)
-            rename { "lib.patch" }
-        }
+        val constants = LibraryConstants(library.get())
 
-        project.copy {
-            from(interfaceFile)
-            into(outputDirectory)
-            rename { "lib.i" }
-        }
+        outputDirectory.addFile(patchFile, "lib", "patch")
+        outputDirectory.addFile(interfaceFile, "lib", "i")
+        outputDirectory.addFile(conanFile, "conanfile")
 
-        variablesMakefile().writeTo(outputDirectory.file("lib.mk"))
-        downloadMakefile().writeTo(outputDirectory.file("get.mk"))
-        outputDirectory.writeResource("build.mk")
+        getMakefile.generate(constants, outputDirectory)
+        buildMakefile.generate(constants, outputDirectory)
         outputDirectory.writeResource("Dockerfile")
         outputDirectory.writeResource(".dockerignore")
-    }
-
-    private val packageDir: Provider<String>
-        get() =
-            library.map { it.packageName.replace(".", "/") }
-
-    /** Returns a Makefile that defines global variables. */
-    private fun variablesMakefile(): MakefileBuilder {
-        val builder = MakefileBuilder()
-        builder.defineVariable("LIB_NAME", library.get().name)
-        builder.defineVariable("LIB_GROUP", library.get().group)
-        builder.defineVariable("LIB_VERSION", library.get().version)
-        builder.defineVariable("LIB_PACKAGE", library.get().packageName)
-        builder.defineVariable("LIB_INCLUDE_DIRS", library.get().includeDirectories.joinToString(" "))
-        builder.defineVariable("DOWNLOAD_DIR", project.relativePath(project.layout.buildDirectory.dir("downloaded")))
-        builder.defineVariable("GENERATED_JAVA_DIR", project.relativePath(generatedJavaDir))
-        builder.defineVariable("GENERATED_CPP_FILE", project.relativePath(generatedCppFile))
-        return builder
-    }
-
-    /** Returns a Makefile for downloading the library source code. */
-    private fun downloadMakefile(): MakefileBuilder {
-        val builder = MakefileBuilder()
-
-        fun git(vararg commandLine: String, cd: File = File("")) {
-            builder.addLine(
-                listOf("git") + commandLine.toList(),
-                workingDirectory = File("$@").resolve(cd).toString())
-        }
-
-        builder.addInclude("lib.mk")
-
-        builder.addRule("$(DOWNLOAD_DIR)/original-source", listOf())
-        builder.addLine(listOf("mkdir", "-p", "$@"))
-
-        // Download library
-        git("init")
-        git("fetch", "--depth", "1", library.get().url, library.get().version)
-        git("checkout", library.get().version)
-
-        // Download submodules
-        val downloadedSubmodules = mutableSetOf<File>()
-        library.get().submodules.forEach { submodule ->
-            var parentSubmodule = File("")
-            val parts = submodule.split(":")
-            assert(parts.isNotEmpty())
-            parts.forEach { part ->
-                val thisModule = parentSubmodule.resolve(part)
-                if (!downloadedSubmodules.contains(thisModule)) {
-                    git("submodule", "update", "--init", "--depth", "1", part, cd = parentSubmodule)
-                    downloadedSubmodules.add(thisModule)
-                }
-                parentSubmodule = thisModule
-            }
-        }
-
-        builder.addLine(listOf("touch", "$@"))
-        return builder
     }
 
     /** Copies Java resource named [resource] into this directory. */
@@ -140,4 +84,21 @@ abstract class CollectLibraryTask : DefaultTask() {
         this.get().file(resource).asFile.writeBytes(
             CollectLibraryTask::class.java.getResource(resource).readBytes()
         )
+
+    /**
+     * Copies [file] into this directory and renames it to [name].[extension].
+     * The original file extension is preserved when no extension is specified.
+     */
+    private fun Provider<Directory>.addFile(
+        file: Provider<RegularFile>,
+        name: String,
+        extension: String = file.get().asFile.extension
+    ) {
+        val directory = this
+        project.copy {
+            from(file)
+            into(directory)
+            rename { "$name.$extension" }
+        }
+    }
 }

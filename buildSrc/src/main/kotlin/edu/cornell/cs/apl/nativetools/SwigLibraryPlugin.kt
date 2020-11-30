@@ -21,6 +21,7 @@ class SwigLibraryPlugin : Plugin<Project> {
                     this.library.set(library)
                     patchFile.set(project.file("${library.name}.patch"))
                     interfaceFile.set(project.file("${library.name}.i"))
+                    conanFile.set(project.file("${library.name}.conanfile.txt"))
                 }
 
                 val swig = project.tasks.register<DockerCopyTask>("dockerSwig${library.name}") {

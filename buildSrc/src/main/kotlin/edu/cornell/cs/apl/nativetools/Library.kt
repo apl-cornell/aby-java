@@ -13,12 +13,18 @@ data class Library(
     @Input
     val version: String,
 
+    /** Git repository URL for the library. */
     @Internal
     val url: String,
 
+    /**
+     * Git submodules of the library that should also be downloaded. Submodules of submodules should be
+     * separated with a colon `:`. For example, `modules/a:external/b:c`.
+     */
     @Input
     val submodules: Iterable<String> = listOf(),
 
+    /** Include paths for SWIG relative to library root. */
     @Input
     val includeDirectories: Iterable<String>
 ) {

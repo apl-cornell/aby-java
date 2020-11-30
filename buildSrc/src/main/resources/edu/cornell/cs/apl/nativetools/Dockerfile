@@ -12,9 +12,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Download library
-COPY lib.mk get.mk ./
+COPY get.mk ./
 RUN make -f get.mk
 
 # Generate the Java interface
-COPY *.mk lib.patch lib.i ./
+COPY build.mk lib.patch lib.i ./
 RUN make -f build.mk swig
