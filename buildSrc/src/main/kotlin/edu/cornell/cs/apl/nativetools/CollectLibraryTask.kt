@@ -6,10 +6,12 @@ import edu.cornell.cs.apl.nativetools.templates.getMakefile
 import edu.cornell.cs.apl.nativetools.templates.swigMakefile
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.Directory
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Nested
@@ -30,11 +32,14 @@ abstract class CollectLibraryTask : DefaultTask() {
     @get:InputFile
     abstract val conanFile: RegularFileProperty
 
+    @get:InputDirectory
+    abstract val jniHeadersDirectory: DirectoryProperty
+
     @get:OutputDirectory
     val outputDirectory: Provider<Directory>
         get() {
             val nameVersion = library.map { "${it.name}-${it.version}" }
-            return project.layout.buildDirectory.dir("tmp/native-tools").dir(nameVersion)
+            return project.layout.buildDirectory.dir(SwigLibraryPlugin.tmpDirectory).dir(nameVersion)
         }
 
     @Internal
@@ -48,6 +53,11 @@ abstract class CollectLibraryTask : DefaultTask() {
     @TaskAction
     fun collect() {
         val constants = LibraryConstants(library.get())
+
+        project.copy {
+            from(jniHeadersDirectory)
+            into(outputDirectory.dir(constants.jniDirectory))
+        }
 
         outputDirectory.addFile(patchFile, constants.patchFile)
         outputDirectory.addFile(interfaceFile, constants.swigFile)

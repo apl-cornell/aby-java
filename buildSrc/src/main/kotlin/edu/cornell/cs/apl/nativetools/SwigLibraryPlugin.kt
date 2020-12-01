@@ -14,6 +14,8 @@ class SwigLibraryPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         val extension = project.extensions.create<SwigLibraryPluginExtension>("swigLibrary")
 
+        val downloadJNIHeaders = project.tasks.register<DownloadJNITask>("downloadJNIHeaders")
+
         // Register tasks for each library
         project.afterEvaluate {
             extension.libraries.get().forEach { library ->
@@ -26,12 +28,13 @@ class SwigLibraryPlugin : Plugin<Project> {
                     patchFile.set(project.file("${library.name}.patch"))
                     interfaceFile.set(project.file("${library.name}.i"))
                     conanFile.set(project.file("${library.name}.conanfile.txt"))
+                    jniHeadersDirectory.set(downloadJNIHeaders.map { it.outputDirectory.get() })
                 }
 
                 val swig = project.tasks.register<DockerCopyTask>("dockerSwig${library.name}") {
                     baseDirectory.set(collect.map { it.outputDirectory.get() })
                     target.set("swig")
-                    from.set("/root/${constants.swigGeneratedJavaBaseDirectory}")
+                    from.set("/work/${constants.swigGeneratedJavaBaseDirectory}")
                     val relativeJavaBaseDir =
                         constants.buildDirectory.relativeTo(constants.swigGeneratedJavaBaseDirectory)
                     into.set(project.layout.buildDirectory.dir(relativeJavaBaseDir))
@@ -46,7 +49,9 @@ class SwigLibraryPlugin : Plugin<Project> {
 
     internal companion object {
         const val taskGroup = "Native Build"
-        const val generatedSrcBaseDir: String = "generated/sources/swig"
+        const val tmpDirectory: String = "tmp/native-tools"
+        const val generatedSourcesBaseDir: String = "generated/sources/swig"
+        const val generatedResourcesBaseDir: String = "generated/resources/swig"
 
         /** Same as [Path.relativize] but works over strings. */
         fun String.relativeTo(other: String) =

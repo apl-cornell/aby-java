@@ -6,11 +6,18 @@ import java.nio.file.Path
 
 /** Provides constants that are used in [Template]s. */
 class LibraryConstants(val library: Library) {
+    private val nameAndVersion
+        get() = "${library.name}-${library.version}"
+
     val patchFile: String
         get() = "lib.patch"
 
     val swigFile: String
         get() = "lib.i"
+
+    /** Directory containing JNI header files. */
+    val jniDirectory: String
+        get() = "jni"
 
     val buildDirectory: String
         get() = "build"
@@ -28,7 +35,7 @@ class LibraryConstants(val library: Library) {
         get() = "$downloadDirectory/patched-source"
 
     private val swigGeneratedBaseDirectory: String
-        get() = "$buildDirectory/${SwigLibraryPlugin.generatedSrcBaseDir}/${library.name}-${library.version}"
+        get() = "$buildDirectory/${SwigLibraryPlugin.generatedSourcesBaseDir}/$nameAndVersion"
 
     val swigGeneratedJavaBaseDirectory: String
         get() = "$swigGeneratedBaseDirectory/java"
@@ -38,6 +45,21 @@ class LibraryConstants(val library: Library) {
 
     val swigGeneratedCppFile: String
         get() = "$swigGeneratedBaseDirectory/cpp/wrapper.cpp"
+
+    val sharedLibraryName: String
+        get() = "${library.safeName}java"
+
+    private val nativeBinaryBaseDirectory: String
+        get() = "$buildDirectory/${SwigLibraryPlugin.generatedResourcesBaseDir}/$nameAndVersion/natives"
+
+    val linuxBinary: String
+        get() = "$nativeBinaryBaseDirectory/linux_64/lib$sharedLibraryName.so"
+
+    val macosBinary: String
+        get() = "$nativeBinaryBaseDirectory/osx_64/lib$sharedLibraryName.dylib"
+
+    val windowsBinary: String
+        get() = "$nativeBinaryBaseDirectory/windows_64/$sharedLibraryName.dll"
 
     companion object {
         /** Prints [path] using Unix separators. */

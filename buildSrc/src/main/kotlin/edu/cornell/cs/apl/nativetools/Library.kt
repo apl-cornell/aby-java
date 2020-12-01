@@ -29,6 +29,10 @@ data class Library(
     val includeDirectories: Iterable<String>
 ) {
     @get:Internal
+    val safeName: String
+        get() = name.toLowerCase().replace("-", "_")
+
+    @get:Internal
     val packageName: String
-        get() = "$group.${name.toLowerCase().replace("-", "_")}"
+        get() = "$group.$safeName"
 }
