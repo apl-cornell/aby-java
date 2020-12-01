@@ -1,6 +1,6 @@
 package edu.cornell.cs.apl.nativetools.templates
 
-/** Makefile for building the library. */
+/** Makefile for generating the Java interface using SWIG. */
 internal val swigMakefile = Makefile("swig.mk") {
     val includes = library.includeDirectories.joinToString(" ") { "-I$</$it" }
     """
@@ -10,9 +10,10 @@ internal val swigMakefile = Makefile("swig.mk") {
 
     include ${getMakefile.name}
 
+    PATCH_FILE := $(abspath $patchFile)
     $patchedSourceDirectory: $originalSourceDirectory $patchFile
-        rsync -au --delete --exclude=.git $</ $@
-        git apply $patchFile --directory $@
+        rsync -au --delete $</ $@
+        cd $@ && git apply $(PATCH_FILE)
         touch $@
 
     $swigGeneratedCppFile $swigGeneratedJavaDirectory: \

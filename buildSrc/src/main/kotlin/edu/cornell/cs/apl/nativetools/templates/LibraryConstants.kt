@@ -5,7 +5,7 @@ import edu.cornell.cs.apl.nativetools.SwigLibraryPlugin
 import java.nio.file.Path
 
 /** Provides constants that are used in [Template]s. */
-class LibraryConstants(val library: Library) {
+internal class LibraryConstants(val library: Library) {
     private val nameAndVersion
         get() = "${library.name}-${library.version}"
 
@@ -15,6 +15,9 @@ class LibraryConstants(val library: Library) {
     val swigFile: String
         get() = "lib.i"
 
+    val cmakeFile: String
+        get() = "lib.cmake"
+
     /** Directory containing JNI header files. */
     val jniDirectory: String
         get() = "jni"
@@ -22,7 +25,7 @@ class LibraryConstants(val library: Library) {
     val buildDirectory: String
         get() = "build"
 
-    private val cmakeBuildDirectory: String
+    val cmakeBuildDirectory: String
         get() = "$buildDirectory/cmake"
 
     private val downloadDirectory: String
@@ -49,7 +52,7 @@ class LibraryConstants(val library: Library) {
     val sharedLibraryName: String
         get() = "${library.safeName}java"
 
-    private val nativeBinaryBaseDirectory: String
+    val nativeBinaryBaseDirectory: String
         get() = "$buildDirectory/${SwigLibraryPlugin.generatedResourcesBaseDir}/$nameAndVersion/natives"
 
     val linuxBinary: String

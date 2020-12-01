@@ -27,6 +27,7 @@ class SwigLibraryPlugin : Plugin<Project> {
                     this.library.set(library)
                     patchFile.set(project.file("${library.name}.patch"))
                     interfaceFile.set(project.file("${library.name}.i"))
+                    cmakeFile.set(project.file("${library.name}.cmake"))
                     conanFile.set(project.file("${library.name}.conanfile.txt"))
                     jniHeadersDirectory.set(downloadJNIHeaders.map { it.outputDirectory.get() })
                 }
