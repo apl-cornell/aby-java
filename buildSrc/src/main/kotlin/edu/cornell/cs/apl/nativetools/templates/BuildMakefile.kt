@@ -6,9 +6,8 @@ internal val buildMakefile = Makefile("build.mk") {
     .PHONY: build
     build: $patchedSourceDirectory $swigGeneratedCppFile
         conan install . --install-folder=$cmakeBuildDirectory --build=missing
-        cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=$nativeBinaryBaseDirectory -B $cmakeBuildDirectory
-        # cmake --build $cmakeBuildDirectory
-        cmake --build $cmakeBuildDirectory --target install
+        cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=. -B $cmakeBuildDirectory
+        cmake --build $cmakeBuildDirectory --target install/strip
 
     include ${swigMakefile.name}
     """

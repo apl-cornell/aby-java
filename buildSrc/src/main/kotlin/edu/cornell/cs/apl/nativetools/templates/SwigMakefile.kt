@@ -12,7 +12,7 @@ internal val swigMakefile = Makefile("swig.mk") {
 
     PATCH_FILE := $(abspath $patchFile)
     $patchedSourceDirectory: $originalSourceDirectory $patchFile
-        rsync -au --delete $</ $@
+        rsync -a --delete $</ $@
         cd $@ && git apply $(PATCH_FILE)
         touch $@
 

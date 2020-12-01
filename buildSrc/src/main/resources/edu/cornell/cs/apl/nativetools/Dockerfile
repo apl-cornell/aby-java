@@ -33,3 +33,20 @@ RUN conan profile update settings.compiler.libcxx=libstdc++11 default
 ## Install dependencies
 COPY conanfile.* .
 RUN conan install . --install-folder=build/cmake --build=missing
+
+## Copy source code
+COPY --from=swig /work .
+
+## Build
+COPY build.mk CMakeLists.txt lib.cmake ./
+COPY jni jni
+RUN make -f build.mk
+
+
+# Build for Windows
+FROM dockcross/windows-static-x64-posix as windows
+
+
+# Build for macOS
+
+

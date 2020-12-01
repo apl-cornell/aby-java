@@ -9,24 +9,17 @@ internal val cmakeLists = Template("CMakeLists.txt") {
     include(${'$'}{CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     conan_basic_setup()
 
-    # Link dependencies statically to generate a self contained binary.
-    # if(WIN32)
-    #     list(INSERT CMAKE_FIND_LIBRARY_SUFFIXES 0 .lib .a)
-    # else()
-    #     set(CMAKE_FIND_LIBRARY_SUFFIXES .a)
-    # endif()
-
     # Generate relocatable code since we are statically linking.
     set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 
-    add_library(${sharedLibraryName} SHARED
+    add_library($sharedLibraryName SHARED
         $swigGeneratedCppFile
     )
 
     include($cmakeFile)
 
-    add_subdirectory(${patchedSourceDirectory})
+    add_subdirectory($patchedSourceDirectory EXCLUDE_FROM_ALL)
 
     # Add Java Native Interface header files.
     set(JAVA_INCLUDE_PATH $jniDirectory)
@@ -37,15 +30,26 @@ internal val cmakeLists = Template("CMakeLists.txt") {
     endif()
     set(JNI_INCLUDE_DIRS ${'$'}{JAVA_INCLUDE_PATH} ${'$'}{JAVA_INCLUDE_PATH2})
 
-    target_include_directories(${sharedLibraryName}
+    target_include_directories($sharedLibraryName
         PRIVATE ${'$'}{JNI_INCLUDE_DIRS}
     )
 
+    # Statically link the C++ standard library.
+    if(UNIX AND NOT APPLE)
+        target_link_libraries($sharedLibraryName PRIVATE -static-libstdc++)
+    endif()
+
+    # Install directory depends on the OS.
+    if(WIN32)
+        set(INSTALL_DIRECTORY $windowsBinaryDirectory)
+    elseif(APPLE)
+        set(INSTALL_DIRECTORY $macosBinaryDirectory)
+    elseif(UNIX)
+        set(INSTALL_DIRECTORY $linuxBinaryDirectory)
+    endif()
     install(TARGETS $sharedLibraryName
-        EXPORT "${'$'}{PROJECT_NAME}Targets"
-        ARCHIVE DESTINATION lib
-        LIBRARY DESTINATION lib
-        INCLUDES DESTINATION lib
+        LIBRARY DESTINATION ${'$'}{INSTALL_DIRECTORY}
+        RUNTIME DESTINATION ${'$'}{INSTALL_DIRECTORY}
     )
     """
 }

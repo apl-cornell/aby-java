@@ -1,29 +1,3 @@
-# Generate the Java interface using SWIG
-FROM ubuntu:20.04 AS swig
-WORKDIR /root
-
-# Install dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates \
-    git \
-    openjdk-11-jdk-headless \
-    swig \
-    && rm -rf /var/lib/apt/lists/*
-
-# Have Gradle Wrapper download the Gradle binary
-COPY gradlew .
-COPY gradle gradle
-RUN ./gradlew --version
-
-# Copy configuration
-COPY gradle.properties *.gradle.kts ./
-COPY buildSrc buildSrc
-
-# Generate the Java interface
-COPY ABY.i ABY.patch ./
-RUN ./gradlew swigABY
-
-
 # Build the Linux binary
 FROM phusion/holy-build-box-64:latest AS builder
 WORKDIR /root
@@ -38,13 +12,6 @@ RUN yum -y install \
 # This is causing missing symbol errors on CI. We remove this library
 # to force GCC to pickup its own libstdc++ which seems to be portable.
 RUN rm -f /hbb_shlib/lib/libstdc++.a
-
-# Download and build source dependencies
-COPY external external
-RUN /hbb_shlib/activate-exec make -C external build-boost clean-source clean-build
-RUN /hbb_shlib/activate-exec make -C external build-gmp clean-source clean-build
-RUN /hbb_shlib/activate-exec make -C external build-openssl clean-source clean-build
-RUN /hbb_shlib/activate-exec make -C external build-openjdk clean-source clean-build
 
 # Copy ABY source code
 COPY --from=swig /root/ABY ABY
