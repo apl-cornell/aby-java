@@ -27,7 +27,7 @@ internal val getMakefile = Makefile("get.mk") {
         mkdir -p $@
         cd $@ && git init
         cd $@ && git fetch --depth 1 ${library.url} ${library.version}
-        cd $@ && git checkout ${library.version}
+        cd $@ && git checkout --quiet ${library.version}
 
         # Download submodules
         ${submoduleCommands.joinToString("\n    \t")}
