@@ -70,6 +70,7 @@ abstract class CollectLibraryTask : DefaultTask() {
         cmakeLists.generate(constants, outputDirectory)
         outputDirectory.writeResource("Dockerfile")
         dockerignore.generate(constants, outputDirectory)
+        outputDirectory.writeResource("profiles/conan.x86_64-apple-darwin14")
 
         project.copy {
             from(jniHeadersDirectory)
@@ -78,10 +79,11 @@ abstract class CollectLibraryTask : DefaultTask() {
     }
 
     /** Copies Java resource named [resource] into this directory. */
-    private fun Provider<Directory>.writeResource(resource: String) =
-        this.get().file(resource).asFile.writeBytes(
-            CollectLibraryTask::class.java.getResource(resource).readBytes()
-        )
+    private fun Provider<Directory>.writeResource(resource: String) {
+        val file = this.get().file(resource).asFile
+        project.mkdir(file.parentFile)
+        file.writeBytes(CollectLibraryTask::class.java.getResource(resource).readBytes())
+    }
 
     /** Copies [file] into this directory and renames it to [name]. */
     private fun Provider<Directory>.addFile(file: Provider<RegularFile>, name: String) {

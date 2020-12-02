@@ -47,6 +47,7 @@ abstract class DownloadJNITask : DefaultTask() {
         DownloadAction(project).apply {
             src("$jdkURL/$jdkVersion/$relativeFilePath")
             dest(destination)
+            quiet(true)
             execute()
         }
     }
