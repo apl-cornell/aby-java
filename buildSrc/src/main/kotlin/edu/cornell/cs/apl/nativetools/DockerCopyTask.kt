@@ -1,19 +1,23 @@
 package edu.cornell.cs.apl.nativetools
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 
 /** Builds a Docker image and copies generated files out. */
 abstract class DockerCopyTask : DefaultTask() {
-    /** Directory that contains the Docker file. */
-    @get:InputDirectory
-    abstract val baseDirectory: DirectoryProperty
+    /** The Docker file to build. */
+    @get:InputFile
+    abstract val dockerfile: RegularFileProperty
 
     /** The Docker target. */
     @get:Input
@@ -27,6 +31,11 @@ abstract class DockerCopyTask : DefaultTask() {
     @get:OutputDirectory
     abstract val into: DirectoryProperty
 
+    /** Directory that contains the files that will be shipped to Docker. */
+    @get:InputDirectory
+    val baseDirectory: Provider<Directory>
+        get() = dockerfile.map { project.layout.projectDirectory.dir(it.asFile.parent) }
+
     @Internal
     override fun getGroup(): String =
         SwigLibraryPlugin.taskGroup
@@ -36,7 +45,7 @@ abstract class DockerCopyTask : DefaultTask() {
         project.dockerCopy(
             from = from.get(),
             to = "${into.get()}",
-            dockerfile = baseDirectory.file("Dockerfile").get(),
+            dockerfile = dockerfile.get(),
             target = target.get()
         )
     }

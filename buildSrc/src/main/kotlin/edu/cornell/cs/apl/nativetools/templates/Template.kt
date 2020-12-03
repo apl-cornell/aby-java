@@ -9,6 +9,15 @@ internal open class Template(val name: String, private val build: LibraryConstan
     fun generate(constants: LibraryConstants, directory: Provider<Directory>) {
         directory.get().file(name).asFile.writeText(build(constants).trimIndent())
     }
+
+    /** Include this template in another. */
+    fun include(constants: LibraryConstants): String {
+        val lines = build(constants).lines()
+        return if (lines.isNotEmpty())
+            (listOf(lines.first().trimIndent()) + lines.drop(1)).joinToString("\n")
+        else
+            ""
+    }
 }
 
 /** A template for a Makefile. Automatically replaces indentation with tabs. */

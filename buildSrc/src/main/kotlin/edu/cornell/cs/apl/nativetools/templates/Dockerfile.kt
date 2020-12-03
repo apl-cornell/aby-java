@@ -1,0 +1,87 @@
+package edu.cornell.cs.apl.nativetools.templates
+
+internal val swigDockerfile = Template("swig.dockerfile") {
+    """
+    # Generate the Java interface using SWIG
+    FROM ubuntu:20.04 AS swig
+
+    ## Install dependencies
+    RUN apt-get update && apt-get install -y --no-install-recommends \
+        ca-certificates \
+        git \
+        make \
+        rsync \
+        swig \
+        && rm -rf /var/lib/apt/lists/*
+
+    WORKDIR $dockerWorkDirectory
+
+    ## Download library
+    COPY ${getMakefile.name} .
+    RUN make -f ${getMakefile.name}
+
+    ## Generate the Java interface
+    COPY ${swigMakefile.name} $patchFile $swigFile ./
+    RUN make -f ${swigMakefile.name}
+    """
+}
+
+internal val linuxDockerfile = Template("linux.dockerfile") {
+    """
+    ${swigDockerfile.include(this)}
+
+    # Build for Linux
+    FROM dockcross/manylinux2014-x64 as linux
+    CMD ["/bin/bash"]
+
+    ## Configure Conan
+    ENV PATH="/opt/python/cp35-cp35m/bin:${'$'}{PATH}"
+    RUN conan profile new --detect default \
+        && conan profile update settings.compiler.libcxx=libstdc++11 default
+
+    WORKDIR $dockerWorkDirectory
+
+    ## Install dependencies
+    COPY conanfile.* .
+    RUN conan install . --install-folder=$cmakeBuildDirectory --build=missing
+
+    ## Copy source code
+    COPY --from=swig $dockerWorkDirectory .
+
+    ## Build
+    COPY ${buildMakefile.name} ${cmakeLists.name} $cmakeFile ./
+    COPY $jniDirectory $jniDirectory
+    RUN make -f ${buildMakefile.name}
+    """
+}
+
+internal val macosDockerfile = Template("macos.dockerfile") {
+    """
+    ${swigDockerfile.include(this)}
+
+    # Build for macOS
+    FROM liushuyu/osxcross as macos
+
+    ## Install Conan
+    RUN wget --quiet https://dl.bintray.com/conan/installers/conan-ubuntu-64_1_31_4.deb -O conan.deb \
+        && dpkg -i conan.deb \
+        && rm conan.deb
+    COPY profiles/conan.x86_64-apple-darwin18 /root/.conan/profiles/default
+
+    WORKDIR $dockerWorkDirectory
+    ENV CROSS_TRIPLE=x86_64-apple-darwin18
+    # ENV MACOSX_DEPLOYMENT_TARGET=10.6
+
+    ## Install dependencies
+    COPY conanfile.* .
+    RUN conan install . --install-folder=build/cmake --build=missing
+
+    ## Copy source code
+    COPY --from=swig $dockerWorkDirectory .
+
+    ## Build
+    COPY ${buildMakefile.name} ${cmakeLists.name} $cmakeFile ./
+    COPY $jniDirectory $jniDirectory
+    RUN make -f ${buildMakefile.name}
+    """
+}

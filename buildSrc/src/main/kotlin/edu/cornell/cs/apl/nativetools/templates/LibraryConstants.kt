@@ -67,6 +67,9 @@ internal class LibraryConstants(val library: Library) {
     val windowsBinaryDirectory: String
         get() = "$nativeBinaryBaseDirectory/windows_64"
 
+    val dockerWorkDirectory: String
+        get() = "/work"
+
     companion object {
         /** Prints [path] using Unix separators. */
         fun unixPath(path: Path): String =

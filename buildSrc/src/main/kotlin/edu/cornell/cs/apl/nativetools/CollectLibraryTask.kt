@@ -5,6 +5,9 @@ import edu.cornell.cs.apl.nativetools.templates.buildMakefile
 import edu.cornell.cs.apl.nativetools.templates.cmakeLists
 import edu.cornell.cs.apl.nativetools.templates.dockerignore
 import edu.cornell.cs.apl.nativetools.templates.getMakefile
+import edu.cornell.cs.apl.nativetools.templates.linuxDockerfile
+import edu.cornell.cs.apl.nativetools.templates.macosDockerfile
+import edu.cornell.cs.apl.nativetools.templates.swigDockerfile
 import edu.cornell.cs.apl.nativetools.templates.swigMakefile
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.Directory
@@ -68,9 +71,12 @@ abstract class CollectLibraryTask : DefaultTask() {
         swigMakefile.generate(constants, outputDirectory)
         buildMakefile.generate(constants, outputDirectory)
         cmakeLists.generate(constants, outputDirectory)
-        outputDirectory.writeResource("Dockerfile")
+
+        swigDockerfile.generate(constants, outputDirectory)
+        linuxDockerfile.generate(constants, outputDirectory)
+        macosDockerfile.generate(constants, outputDirectory)
         dockerignore.generate(constants, outputDirectory)
-        outputDirectory.writeResource("profiles/conan.x86_64-apple-darwin14")
+        outputDirectory.writeResource("profiles/conan.x86_64-apple-darwin18")
 
         project.copy {
             from(jniHeadersDirectory)

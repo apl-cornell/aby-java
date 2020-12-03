@@ -1,7 +1,7 @@
 package edu.cornell.cs.apl.nativetools
 
 import edu.cornell.cs.apl.nativetools.templates.LibraryConstants
-import java.nio.file.Path
+import java.io.File
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.SourceSet
@@ -32,13 +32,26 @@ class SwigLibraryPlugin : Plugin<Project> {
                     jniHeadersDirectory.set(downloadJNIHeaders.map { it.outputDirectory.get() })
                 }
 
+                /**
+                 * Configures [DockerCopyTask.from] and [DockerCopyTask.into] from a relative path.
+                 * @param relativePath A path relative to the working directory of the Docker image.
+                 */
+                fun DockerCopyTask.configureRelativePath(target: String, relativePath: String) {
+                    this.dockerfile.set(collect.map { it.outputDirectory.get().file("$target.dockerfile") })
+                    this.target.set(target)
+                    from.set("${constants.dockerWorkDirectory}/$relativePath")
+                    // Handle the case where Gradle's build directory is renamed.
+                    val relativeToBuildDir =
+                        File(relativePath).relativeTo(File(constants.buildDirectory)).toString()
+                    into.set(project.layout.buildDirectory.dir(relativeToBuildDir))
+                }
+
                 val swig = project.tasks.register<DockerCopyTask>("dockerSwig${library.name}") {
-                    baseDirectory.set(collect.map { it.outputDirectory.get() })
-                    target.set("swig")
-                    from.set("/work/${constants.swigGeneratedJavaBaseDirectory}")
-                    val relativeJavaBaseDir =
-                        constants.buildDirectory.relativeTo(constants.swigGeneratedJavaBaseDirectory)
-                    into.set(project.layout.buildDirectory.dir(relativeJavaBaseDir))
+                    configureRelativePath("swig", constants.swigGeneratedJavaBaseDirectory)
+                }
+
+                project.tasks.register<DockerCopyTask>("dockerCompileLinux${library.name}") {
+                    configureRelativePath("linux", constants.linuxBinaryDirectory)
                 }
 
                 project.extensions.getByType<SourceSetContainer>().named(SourceSet.MAIN_SOURCE_SET_NAME) {
@@ -53,9 +66,5 @@ class SwigLibraryPlugin : Plugin<Project> {
         const val tmpDirectory: String = "tmp/native-tools"
         const val generatedSourcesBaseDir: String = "generated/sources/swig"
         const val generatedResourcesBaseDir: String = "generated/resources/swig"
-
-        /** Same as [Path.relativize] but works over strings. */
-        fun String.relativeTo(other: String) =
-            Path.of(this).relativize(Path.of(other)).toString()
     }
 }
