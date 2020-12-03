@@ -1,10 +1,7 @@
 [requires]
-boost/1.74.0
+boost/1.72.0
 gmp/6.2.0
 openssl/1.1.1h
-
-[generators]
-cmake
 
 [options]
 boost:zlib=False

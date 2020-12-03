@@ -7,23 +7,15 @@ package edu.cornell.cs.apl.nativetools.templates
 internal val cmakeLists = Template("CMakeLists.txt") {
     """
     cmake_minimum_required(VERSION 3.12)
-    project(${library.name}Java LANGUAGES CXX)
+    project($cmakeWrapperProjectName LANGUAGES CXX)
 
-    # Use Conan to resolve dependencies.
-    include(${'$'}{CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-    conan_basic_setup()
-
-    # Generate relocatable code since we are statically linking.
-    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-
+    set(CMAKE_PREFIX_PATH $cmakeSourceInstallDirectory ${'$'}{CMAKE_PREFIX_PATH})
 
     add_library($sharedLibraryName SHARED
         $swigGeneratedCppFile
     )
 
     include($cmakeFile)
-
-    add_subdirectory($patchedSourceDirectory EXCLUDE_FROM_ALL)
 
     # Add Java Native Interface header files.
     set(JAVA_INCLUDE_PATH $jniDirectory)

@@ -25,8 +25,20 @@ internal class LibraryConstants(val library: Library) {
     val buildDirectory: String
         get() = "build"
 
-    val cmakeBuildDirectory: String
+    private val cmakeDirectory: String
         get() = "$buildDirectory/cmake"
+
+    val cmakeSourceBuildDirectory: String
+        get() = "$cmakeDirectory/source-build"
+
+    val cmakeSourceInstallDirectory: String
+        get() = "$cmakeDirectory/source-install"
+
+    val cmakeWrapperBuildDirectory: String
+        get() = "$cmakeDirectory/wrapper-build"
+
+    val cmakeWrapperProjectName: String
+        get() = "${library.name}Java"
 
     private val downloadDirectory: String
         get() = "$buildDirectory/downloaded"
