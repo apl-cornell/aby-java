@@ -4,7 +4,32 @@ on: [ push, pull_request ]
 
 jobs:
   build:
-    name: build (${{ matrix.os }}, JDK ${{ matrix.java }})
+    runs-on: ubuntu-20.04
+
+    env:
+      JDK_VERSION: 11
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK ${{ env.JDK_VERSION }}
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ env.JDK_VERSION }}
+      - name: Generate classes and native binaries
+        uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: classes check -x test
+      - name: Upload generated files for other jobs
+        uses: actions/upload-artifact@v2
+        with:
+          name: ClassesAndResources
+          path: |
+            build/classes
+            build/resources
+
+  test:
+    name: test (${{ matrix.os }}, JDK ${{ matrix.java }})
+    needs: build
 
     runs-on: ${{ matrix.os }}
 
@@ -25,14 +50,12 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java }}
-      - name: Install Docker
-        if: runner.os == 'macOS'
-        run: |
-          brew install docker docker-machine
-          docker-machine create --driver virtualbox default
-          docker-machine env default
-          docker-machine env default | head -n 4 | cut -f 2- -d ' ' | sed 's/"//g' >> $GITHUB_ENV
-      - name: Build with Gradle
+      - name: Download generated files
+        uses: actions/download-artifact@v2
+        with:
+          name: ClassesAndResources
+          path: build
+      - name: Test with Gradle
         uses: eskatos/gradle-command-action@v1
         with:
-          arguments: check test --tests=*AbyTest.constantGate
+          arguments: -x classes test --tests=*AbyTest.constantGate
