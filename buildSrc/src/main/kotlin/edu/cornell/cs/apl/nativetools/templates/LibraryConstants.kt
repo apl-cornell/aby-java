@@ -52,20 +52,14 @@ internal class LibraryConstants(val library: Library) {
     val sharedLibraryName: String
         get() = "${library.safeName}java"
 
-    val generatedResourcesDirectory: String
+    private val generatedResourcesDirectory: String
         get() = "$buildDirectory/${SwigLibraryPlugin.generatedResourcesBaseDir}/$nameAndVersion"
 
-    private val nativeBinaryBaseDirectory: String
-        get() = "$generatedResourcesDirectory/natives"
+    fun nativeBinaryBaseDirectory(platform: Platform): String =
+        "$generatedResourcesDirectory/${platform.safeName}"
 
-    val linuxBinaryDirectory: String
-        get() = "$nativeBinaryBaseDirectory/linux_64"
-
-    val macosBinaryDirectory: String
-        get() = "$nativeBinaryBaseDirectory/osx_64"
-
-    val windowsBinaryDirectory: String
-        get() = "$nativeBinaryBaseDirectory/windows_64"
+    fun nativeBinaryDirectory(platform: Platform): String =
+        "${nativeBinaryBaseDirectory(platform)}/natives/${platform.binaryDirectory}"
 
     val dockerWorkDirectory: String
         get() = "/work"

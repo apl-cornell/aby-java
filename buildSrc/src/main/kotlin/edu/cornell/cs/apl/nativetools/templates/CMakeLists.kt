@@ -1,5 +1,9 @@
 package edu.cornell.cs.apl.nativetools.templates
 
+// TODO: stop CMake from picking up system Boost
+//   https://cmake.org/cmake/help/git-stage/variable/CMAKE_FIND_PACKAGE_PREFER_CONFIG.html
+//   https://docs.conan.io/en/latest/integrations/build_system/cmake/cmake_paths_generator.html
+// TODO: silence CMake complaining about too new Boost
 internal val cmakeLists = Template("CMakeLists.txt") {
     """
     cmake_minimum_required(VERSION 3.12)
@@ -41,11 +45,11 @@ internal val cmakeLists = Template("CMakeLists.txt") {
 
     # Install directory depends on the OS.
     if(WIN32)
-        set(INSTALL_DIRECTORY $windowsBinaryDirectory)
+        set(INSTALL_DIRECTORY ${nativeBinaryDirectory(Platform.WINDOWS_64)})
     elseif(APPLE)
-        set(INSTALL_DIRECTORY $macosBinaryDirectory)
+        set(INSTALL_DIRECTORY ${nativeBinaryDirectory(Platform.MACOS_64)})
     elseif(UNIX)
-        set(INSTALL_DIRECTORY $linuxBinaryDirectory)
+        set(INSTALL_DIRECTORY ${nativeBinaryDirectory(Platform.LINUX_64)})
     endif()
     install(TARGETS $sharedLibraryName
         LIBRARY DESTINATION ${'$'}{INSTALL_DIRECTORY}

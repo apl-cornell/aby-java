@@ -1,11 +1,13 @@
 package edu.cornell.cs.apl.nativetools
 
 import edu.cornell.cs.apl.nativetools.templates.LibraryConstants
+import edu.cornell.cs.apl.nativetools.templates.Platform
 import java.io.File
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.SourceSetContainer
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.register
@@ -50,20 +52,21 @@ class SwigLibraryPlugin : Plugin<Project> {
                     configureRelativePath("swig", constants.swigGeneratedJavaBaseDirectory)
                 }
 
-                project.tasks.register<DockerCopyTask>("dockerCompileLinux${library.name}") {
-                    configureRelativePath("linux", constants.linuxBinaryDirectory)
+                fun registerCompileTask(platform: Platform): TaskProvider<DockerCopyTask> {
+                    val taskName = "dockerCompile${platform.safeName.capitalize()}${library.name}"
+                    return project.tasks.register<DockerCopyTask>(taskName) {
+                        configureRelativePath(platform.safeName, constants.nativeBinaryBaseDirectory(platform))
+                    }
                 }
 
-                project.tasks.register<DockerCopyTask>("dockerCompileMacos${library.name}") {
-                    configureRelativePath("macos", constants.macosBinaryDirectory)
-                }
-
-                project.tasks.register<DockerCopyTask>("dockerCompileWindows${library.name}") {
-                    configureRelativePath("windows", constants.windowsBinaryDirectory)
-                }
+                val platforms = listOf(Platform.LINUX_64, Platform.MACOS_64)
+                val compileTasks = platforms.map { registerCompileTask(it) }
 
                 project.extensions.getByType<SourceSetContainer>().named(SourceSet.MAIN_SOURCE_SET_NAME) {
                     java.srcDir { swig.map { it.into.get() } }
+                    compileTasks.forEach { task ->
+                        resources.srcDir { task.map { it.into.get() } }
+                    }
                 }
             }
         }

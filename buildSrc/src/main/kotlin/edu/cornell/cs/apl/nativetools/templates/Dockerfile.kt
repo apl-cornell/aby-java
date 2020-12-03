@@ -26,12 +26,13 @@ internal val swigDockerfile = Template("swig.dockerfile") {
     """
 }
 
-internal val linuxDockerfile = Template("linux.dockerfile") {
-    """
+internal val linuxDockerfile = Platform.LINUX_64.let { platform ->
+    Template("${platform.safeName}.dockerfile") {
+        """
     ${swigDockerfile.include(this)}
 
     # Build for Linux
-    FROM dockcross/manylinux2014-x64 as linux
+    FROM dockcross/manylinux2014-x64 as ${platform.safeName}
     CMD ["/bin/bash"]
 
     ## Configure Conan
@@ -53,14 +54,17 @@ internal val linuxDockerfile = Template("linux.dockerfile") {
     COPY $jniDirectory $jniDirectory
     RUN make -f ${buildMakefile.name}
     """
+    }
 }
 
-internal val macosDockerfile = Template("macos.dockerfile") {
-    """
+// TODO: do we need to worry about MACOSX_DEPLOYMENT_TARGET?
+internal val macosDockerfile = Platform.MACOS_64.let { platform ->
+    Template("${platform.safeName}.dockerfile") {
+        """
     ${swigDockerfile.include(this)}
 
     # Build for macOS
-    FROM liushuyu/osxcross as macos
+    FROM liushuyu/osxcross as ${platform.safeName}
 
     ## Install dependencies
     RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -100,4 +104,5 @@ internal val macosDockerfile = Template("macos.dockerfile") {
     ENV CMAKE_TOOLCHAIN_FILE=$dockerWorkDirectory/Toolchain.cmake
     RUN /bin/bash -c "source <(${'$'}CROSS_TOOLCHAIN-osxcross-conf) && make -f ${buildMakefile.name}"
     """
+    }
 }
