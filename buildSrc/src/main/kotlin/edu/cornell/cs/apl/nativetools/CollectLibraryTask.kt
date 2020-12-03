@@ -76,7 +76,8 @@ abstract class CollectLibraryTask : DefaultTask() {
         linuxDockerfile.generate(constants, outputDirectory)
         macosDockerfile.generate(constants, outputDirectory)
         dockerignore.generate(constants, outputDirectory)
-        outputDirectory.writeResource("profiles/conan.x86_64-apple-darwin18")
+        outputDirectory.writeResource("profiles/x86_64-apple-darwin.cmake")
+        outputDirectory.writeResource("profiles/x86_64-apple-darwin.conan")
 
         project.copy {
             from(jniHeadersDirectory)

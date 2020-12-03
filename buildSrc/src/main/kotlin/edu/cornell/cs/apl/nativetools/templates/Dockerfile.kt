@@ -62,19 +62,32 @@ internal val macosDockerfile = Template("macos.dockerfile") {
     # Build for macOS
     FROM liushuyu/osxcross as macos
 
+    ## Install dependencies
+    RUN apt-get update && apt-get install -y --no-install-recommends \
+        gettext-base \
+        m4 \
+        && rm -rf /var/lib/apt/lists/*
+
     ## Install Conan
     RUN wget --quiet https://dl.bintray.com/conan/installers/conan-ubuntu-64_1_31_4.deb -O conan.deb \
         && dpkg -i conan.deb \
         && rm conan.deb
-    COPY profiles/conan.x86_64-apple-darwin18 /root/.conan/profiles/default
+
+    ENV CROSS_TRIPLE=x86_64-apple-darwin18
+    ENV CROSS_TOOLCHAIN=/opt/osxcross/bin/${'$'}{CROSS_TRIPLE}
+
+    ## Configure Conan
+    ARG CONAN_PROFILE=/root/.conan/profiles/default
+    COPY profiles/x86_64-apple-darwin.conan ${'$'}CONAN_PROFILE-source
+    RUN envsubst < ${'$'}CONAN_PROFILE-source > ${'$'}CONAN_PROFILE \
+        && rm ${'$'}CONAN_PROFILE-source
 
     WORKDIR $dockerWorkDirectory
-    ENV CROSS_TRIPLE=x86_64-apple-darwin18
     # ENV MACOSX_DEPLOYMENT_TARGET=10.6
 
     ## Install dependencies
     COPY conanfile.* .
-    RUN conan install . --install-folder=build/cmake --build=missing
+    RUN conan install . --install-folder=build/cmake --build=b2 --build=missing
 
     ## Copy source code
     COPY --from=swig $dockerWorkDirectory .
@@ -82,6 +95,9 @@ internal val macosDockerfile = Template("macos.dockerfile") {
     ## Build
     COPY ${buildMakefile.name} ${cmakeLists.name} $cmakeFile ./
     COPY $jniDirectory $jniDirectory
-    RUN make -f ${buildMakefile.name}
+
+    COPY profiles/x86_64-apple-darwin.cmake Toolchain.cmake
+    ENV CMAKE_TOOLCHAIN_FILE=$dockerWorkDirectory/Toolchain.cmake
+    RUN /bin/bash -c "source <(${'$'}CROSS_TOOLCHAIN-osxcross-conf) && make -f ${buildMakefile.name}"
     """
 }

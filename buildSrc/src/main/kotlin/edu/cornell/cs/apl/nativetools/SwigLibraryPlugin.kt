@@ -54,6 +54,14 @@ class SwigLibraryPlugin : Plugin<Project> {
                     configureRelativePath("linux", constants.linuxBinaryDirectory)
                 }
 
+                project.tasks.register<DockerCopyTask>("dockerCompileMacos${library.name}") {
+                    configureRelativePath("macos", constants.macosBinaryDirectory)
+                }
+
+                project.tasks.register<DockerCopyTask>("dockerCompileWindows${library.name}") {
+                    configureRelativePath("windows", constants.windowsBinaryDirectory)
+                }
+
                 project.extensions.getByType<SourceSetContainer>().named(SourceSet.MAIN_SOURCE_SET_NAME) {
                     java.srcDir { swig.map { it.into.get() } }
                 }
