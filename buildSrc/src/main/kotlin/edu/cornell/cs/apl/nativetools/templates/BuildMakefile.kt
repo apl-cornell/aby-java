@@ -9,6 +9,6 @@ internal val buildMakefile = Makefile("build.mk") {
         cmake -Wno-dev -DCMAKE_TOOLCHAIN_FILE=${'$'}(CMAKE_TOOLCHAIN_FILE) -DCMAKE_INSTALL_PREFIX=. -B $cmakeBuildDirectory
         cmake --build $cmakeBuildDirectory --target install/strip
 
-    include ${swigMakefile.name}
+    -include ${swigMakefile.name}
     """
 }

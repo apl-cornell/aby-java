@@ -8,7 +8,7 @@ internal val swigMakefile = Makefile("swig.mk") {
     swig: $swigGeneratedCppFile \
           $swigGeneratedJavaDirectory
 
-    include ${getMakefile.name}
+    -include ${getMakefile.name}
 
     PATCH_FILE := $(abspath $patchFile)
     $patchedSourceDirectory: $originalSourceDirectory $patchFile

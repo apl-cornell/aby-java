@@ -47,7 +47,8 @@ internal val linuxDockerfile = Platform.LINUX_64.let { platform ->
     RUN conan install . --install-folder=$cmakeBuildDirectory --build=missing
 
     ## Copy source code
-    COPY --from=swig $dockerWorkDirectory .
+    COPY --from=swig $dockerWorkDirectory/$patchedSourceDirectory/ $patchedSourceDirectory
+    COPY --from=swig $dockerWorkDirectory/$swigGeneratedCppFile $swigGeneratedCppFile
 
     ## Build
     COPY ${buildMakefile.name} ${cmakeLists.name} $cmakeFile ./
@@ -94,7 +95,8 @@ internal val macosDockerfile = Platform.MACOS_64.let { platform ->
     RUN conan install . --install-folder=build/cmake --build=b2 --build=missing
 
     ## Copy source code
-    COPY --from=swig $dockerWorkDirectory .
+    COPY --from=swig $dockerWorkDirectory/$patchedSourceDirectory/ $patchedSourceDirectory
+    COPY --from=swig $dockerWorkDirectory/$swigGeneratedCppFile $swigGeneratedCppFile
 
     ## Build
     COPY ${buildMakefile.name} ${cmakeLists.name} $cmakeFile ./
