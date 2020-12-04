@@ -46,14 +46,7 @@ internal val linuxDockerfile = Platform.LINUX_64.let { platform ->
     COPY conanfile.* .
     RUN conan install . --install-folder=$cmakeBuildDirectory --build=missing
 
-    ## Copy source code
-    COPY --from=swig $dockerWorkDirectory/$patchedSourceDirectory/ $patchedSourceDirectory
-    COPY --from=swig $dockerWorkDirectory/$swigGeneratedCppFile $swigGeneratedCppFile
-
-    ## Build
-    COPY ${buildMakefile.name} ${cmakeLists.name} $cmakeFile ./
-    COPY $jniDirectory $jniDirectory
-    RUN make -f ${buildMakefile.name}
+    ${build.include(this)}
     """
     }
 }
@@ -78,14 +71,23 @@ internal val macosDockerfile = Platform.MACOS_64.let { platform ->
         && dpkg -i conan.deb \
         && rm conan.deb
 
-    ENV CROSS_TRIPLE=x86_64-apple-darwin18
-    ENV CROSS_TOOLCHAIN=/opt/osxcross/bin/${'$'}{CROSS_TRIPLE}
+    ## Set environment variables
+    SHELL ["/bin/sh", "-l", "-c"]
+    ARG OSXCROSS_ENV=/root/.profile
+    RUN osxcross-conf > ${'$'}OSXCROSS_ENV
+    RUN echo "export CROSS_TRIPLE=x86_64-apple-${'$'}OSXCROSS_TARGET" >> ${'$'}OSXCROSS_ENV
+    RUN echo "export CROSS_TOOLCHAIN=${'$'}OSXCROSS_CCTOOLS_PATH/${'$'}CROSS_TRIPLE" >> ${'$'}OSXCROSS_ENV
+    RUN echo ". ${'$'}OSXCROSS_ENV" > /root/.bashrc
 
     ## Configure Conan
     ARG CONAN_PROFILE=/root/.conan/profiles/default
     COPY profiles/x86_64-apple-darwin.conan ${'$'}CONAN_PROFILE-source
     RUN envsubst < ${'$'}CONAN_PROFILE-source > ${'$'}CONAN_PROFILE \
         && rm ${'$'}CONAN_PROFILE-source
+
+    ## Configure CMake
+    COPY profiles/x86_64-apple-darwin.cmake /root/Toolchain.cmake
+    ENV CMAKE_TOOLCHAIN_FILE=/root/Toolchain.cmake
 
     WORKDIR $dockerWorkDirectory
     # ENV MACOSX_DEPLOYMENT_TARGET=10.6
@@ -94,6 +96,13 @@ internal val macosDockerfile = Platform.MACOS_64.let { platform ->
     COPY conanfile.* .
     RUN conan install . --install-folder=$cmakeBuildDirectory --build=b2 --build=missing
 
+    ${build.include(this)}
+    """
+    }
+}
+
+private val build = Template("build") {
+    """
     ## Copy source code
     COPY --from=swig $dockerWorkDirectory/$patchedSourceDirectory/ $patchedSourceDirectory
     COPY --from=swig $dockerWorkDirectory/$swigGeneratedCppFile $swigGeneratedCppFile
@@ -102,9 +111,6 @@ internal val macosDockerfile = Platform.MACOS_64.let { platform ->
     COPY ${buildMakefile.name} ${cmakeLists.name} $cmakeFile ./
     COPY $jniDirectory $jniDirectory
 
-    COPY profiles/x86_64-apple-darwin.cmake Toolchain.cmake
-    ENV CMAKE_TOOLCHAIN_FILE=$dockerWorkDirectory/Toolchain.cmake
-    RUN /bin/bash -c "source <(${'$'}CROSS_TOOLCHAIN-osxcross-conf) && make -f ${buildMakefile.name}"
+    RUN make -f ${buildMakefile.name}
     """
-    }
 }

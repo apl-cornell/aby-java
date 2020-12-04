@@ -11,13 +11,8 @@ internal open class Template(val name: String, private val build: LibraryConstan
     }
 
     /** Include this template in another. */
-    fun include(constants: LibraryConstants): String {
-        val lines = build(constants).lines()
-        return if (lines.isNotEmpty())
-            (listOf(lines.first().trimIndent()) + lines.drop(1)).joinToString("\n")
-        else
-            ""
-    }
+    fun include(constants: LibraryConstants): String =
+        build(constants)
 }
 
 /** A template for a Makefile. Automatically replaces indentation with tabs. */
