@@ -1,3 +1,16 @@
+diff --git i/cmake/ABYConfig.cmake.in w/cmake/ABYConfig.cmake.in
+index d0008aa..7b46131 100644
+--- i/cmake/ABYConfig.cmake.in
++++ w/cmake/ABYConfig.cmake.in
+@@ -6,7 +6,6 @@ include(CMakeFindDependencyMacro)
+ 
+ find_dependency(OTExtension)
+ find_dependency(ENCRYPTO_utils)
+-find_dependency(MIRACL)
+ find_dependency(GMP)
+ find_dependency(Threads)
+ 
+Submodule extern/ENCRYPTO_utils contains untracked content
 Submodule extern/ENCRYPTO_utils contains modified content
 diff --git i/extern/ENCRYPTO_utils/CMakeLists.txt w/extern/ENCRYPTO_utils/CMakeLists.txt
 index 3a67fe3..f24ae8b 100644
@@ -23,6 +36,19 @@ index 3a67fe3..f24ae8b 100644
  add_subdirectory(src)
  
  if(ENCRYPTO_UTILS_BUILD_TESTS)
+diff --git i/extern/ENCRYPTO_utils/cmake/ENCRYPTO_utilsConfig.cmake.in w/extern/ENCRYPTO_utils/cmake/ENCRYPTO_utilsConfig.cmake.in
+index 4a90087..7e8bac9 100644
+--- i/extern/ENCRYPTO_utils/cmake/ENCRYPTO_utilsConfig.cmake.in
++++ w/extern/ENCRYPTO_utils/cmake/ENCRYPTO_utilsConfig.cmake.in
+@@ -7,6 +7,7 @@ include(CMakeFindDependencyMacro)
+ find_dependency(GMP)
+ find_dependency(GMPXX)
+ find_dependency(OpenSSL)
++find_dependency(RELIC)
+ 
+ if(NOT TARGET ENCRYPTO_utils::encrypto_utils)
+     include("${ENCRYPTO_utils_CMAKE_DIR}/ENCRYPTO_utilsTargets.cmake")
+Submodule extern/relic contains untracked content
 Submodule extern/relic contains modified content
 diff --git i/extern/ENCRYPTO_utils/extern/relic/bench/bench_bn.c w/extern/ENCRYPTO_utils/extern/relic/bench/bench_bn.c
 index 447f46e..9f135af 100644
@@ -113,10 +139,10 @@ index 2d37c2a..a9f60dc 100644
  #define bn_grow 	PREFIX(bn_grow)
  #define bn_trim 	PREFIX(bn_trim)
 diff --git i/extern/ENCRYPTO_utils/extern/relic/src/CMakeLists.txt w/extern/ENCRYPTO_utils/extern/relic/src/CMakeLists.txt
-index 4255bc0..b033cb7 100644
+index 4255bc0..b0a2e50 100644
 --- i/extern/ENCRYPTO_utils/extern/relic/src/CMakeLists.txt
 +++ w/extern/ENCRYPTO_utils/extern/relic/src/CMakeLists.txt
-@@ -211,5 +211,20 @@ if (STLIB)
+@@ -211,5 +211,32 @@ if (STLIB)
  	add_dependencies(${RELIC_S} arith_objs)
  	target_link_libraries(${RELIC_S} ${ARITH_LIBS})
  	link_libs(${RELIC_S})
@@ -138,6 +164,18 @@ index 4255bc0..b033cb7 100644
  endif(STLIB)
 +
 +install(EXPORT "${PROJECT_NAME}Targets" NAMESPACE "${PROJECT_NAME}::" DESTINATION "lib/cmake/${PROJECT_NAME}")
++
++include(CMakePackageConfigHelpers)
++
++configure_package_config_file("${PROJECT_SOURCE_DIR}/cmake/Config.cmake.in"
++  "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
++  INSTALL_DESTINATION "lib/cmake/${PROJECT_NAME}"
++)
++
++install(FILES
++  "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
++  DESTINATION lib/cmake/${PROJECT_NAME}
++)
 diff --git i/extern/ENCRYPTO_utils/extern/relic/src/bn/relic_bn_mem.c w/extern/ENCRYPTO_utils/extern/relic/src/bn/relic_bn_mem.c
 index ca0ae3b..68d04a1 100644
 --- i/extern/ENCRYPTO_utils/extern/relic/src/bn/relic_bn_mem.c
