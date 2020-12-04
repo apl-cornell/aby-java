@@ -34,8 +34,6 @@ java {
 }
 
 dependencies {
-    implementation("org.scijava:native-lib-loader:2.3.4")
-
     // Testing
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0-M1")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.7.0-M1")

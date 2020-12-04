@@ -67,6 +67,23 @@ abstract class CollectLibraryTask : DefaultTask() {
         outputDirectory.addFile(cmakeFile, constants.cmakeFile)
         outputDirectory.addFile(conanFile, "conanfile.${conanFile.get().asFile.extension}")
 
+        outputDirectory.file(constants.swigFile).get().asFile.appendText(
+            """
+
+            // Add code to the generated Java wrapper to automatically load the library.
+            %pragma(java) jniclasscode=%{
+              static {
+                try {
+                  org.scijava.nativelib.NativeLoader.loadLibrary("${constants.sharedLibraryName}");
+                } catch (java.io.IOException e) {
+                  throw new Error(e);
+                }
+              }
+            %}
+
+            """.trimIndent()
+        )
+
         getMakefile.generate(constants, outputDirectory)
         swigMakefile.generate(constants, outputDirectory)
         buildMakefile.generate(constants, outputDirectory)

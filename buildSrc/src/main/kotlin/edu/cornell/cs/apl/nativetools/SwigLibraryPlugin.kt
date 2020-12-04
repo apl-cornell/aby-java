@@ -16,6 +16,8 @@ class SwigLibraryPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         val extension = project.extensions.create<SwigLibraryPluginExtension>("swigLibrary")
 
+        project.dependencies.add("implementation", "org.scijava:native-lib-loader:2.3.4")
+
         val downloadJNIHeaders = project.tasks.register<DownloadJNITask>("downloadJNIHeaders")
 
         // Register tasks for each library
