@@ -105,12 +105,16 @@ private val build = Template("build") {
     """
     ## Copy source code
     COPY --from=swig $dockerWorkDirectory/$patchedSourceDirectory/ $patchedSourceDirectory
-    COPY --from=swig $dockerWorkDirectory/$swigGeneratedCppFile $swigGeneratedCppFile
 
-    ## Build
+    ## Build the base library using a dummy wrapper
     COPY ${buildMakefile.name} ${cmakeLists.name} $cmakeFile ./
-    COPY $jniDirectory $jniDirectory
+    RUN mkdir -p $(dirname $swigGeneratedCppFile) && touch $swigGeneratedCppFile
+    RUN make -f ${buildMakefile.name}
 
+    ## Build the wrapper
+    COPY $jniDirectory $jniDirectory
+    COPY --from=swig $dockerWorkDirectory/$swigGeneratedCppFile $swigGeneratedCppFile
+    RUN touch $swigGeneratedCppFile
     RUN make -f ${buildMakefile.name}
     """
 }
