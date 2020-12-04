@@ -59,3 +59,30 @@ jobs:
         uses: eskatos/gradle-command-action@v1
         with:
           arguments: -x classes test --tests=*AbyTest.constantGate
+
+  publish:
+    needs: test
+    if: github.event_name == 'push'
+
+    runs-on: ubuntu-20.04
+
+    env:
+      JDK_VERSION: 11
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK ${{ env.JDK_VERSION }}
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ env.JDK_VERSION }}
+      - name: Download generated files
+        uses: actions/download-artifact@v2
+        with:
+          name: ClassesAndResources
+          path: build
+      - name: Publish to GitHub Packages
+        uses: eskatos/gradle-command-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          arguments: -x classes publish

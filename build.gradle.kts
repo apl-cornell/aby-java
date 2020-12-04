@@ -77,8 +77,20 @@ tasks.jacocoTestReport {
 
 publishing {
     publications {
-        create<MavenPublication>("maven") {
+        create<MavenPublication>("default") {
             from(components["java"])
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            version = System.getenv("GITHUB_SHA")
+            url = uri("https://maven.pkg.github.com/${System.getenv("GITHUB_REPOSITORY")}")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
         }
     }
 }
