@@ -1,17 +1,12 @@
 package edu.cornell.cs.apl.nativetools.templates
 
-// TODO: stop CMake from picking up system Boost
-//   https://cmake.org/cmake/help/git-stage/variable/CMAKE_FIND_PACKAGE_PREFER_CONFIG.html
-//   https://docs.conan.io/en/latest/integrations/build_system/cmake/cmake_paths_generator.html
-// TODO: silence CMake complaining about too new Boost
 internal val cmakeLists = Template("CMakeLists.txt") {
     """
     cmake_minimum_required(VERSION 3.12)
     project(${library.name}Java LANGUAGES CXX)
 
     # Use Conan to resolve dependencies.
-    include(${'$'}{CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-    conan_basic_setup()
+    include(${'$'}{CMAKE_BINARY_DIR}/conan_paths.cmake)
 
     # Generate relocatable code since we are statically linking.
     set(CMAKE_POSITION_INDEPENDENT_CODE ON)

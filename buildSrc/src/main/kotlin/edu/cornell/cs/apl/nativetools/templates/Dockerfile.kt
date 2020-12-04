@@ -92,7 +92,7 @@ internal val macosDockerfile = Platform.MACOS_64.let { platform ->
 
     ## Install dependencies
     COPY conanfile.* .
-    RUN conan install . --install-folder=build/cmake --build=b2 --build=missing
+    RUN conan install . --install-folder=$cmakeBuildDirectory --build=b2 --build=missing
 
     ## Copy source code
     COPY --from=swig $dockerWorkDirectory/$patchedSourceDirectory/ $patchedSourceDirectory
