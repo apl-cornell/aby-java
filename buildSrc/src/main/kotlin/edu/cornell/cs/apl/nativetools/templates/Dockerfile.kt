@@ -32,11 +32,11 @@ internal val linuxDockerfile = Platform.LINUX_64.let { platform ->
     ${swigDockerfile.include(this)}
 
     # Build for Linux
-    FROM dockcross/manylinux2014-x64 as ${platform.safeName}
+    FROM dockcross/manylinux2014-x64:20210210-84c47e5 as ${platform.safeName}
     CMD ["/bin/bash"]
 
     ## Configure Conan
-    ENV PATH="/opt/python/cp35-cp35m/bin:${'$'}{PATH}"
+    ENV PATH="/opt/python/cp38-cp38/bin:${'$'}{PATH}"
     RUN conan profile new --detect default \
         && conan profile update settings.compiler.libcxx=libstdc++11 default
 
