@@ -1,5 +1,5 @@
 [requires]
-boost/1.75.0
+boost/1.72.0
 gmp/6.2.1
 openssl/1.1.1h
 
