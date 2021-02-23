@@ -22,10 +22,6 @@ group = abyGroup
 
 version = abyVersion.substring(0..6)
 
-repositories {
-    jcenter()
-}
-
 /** Java Version */
 
 java {
