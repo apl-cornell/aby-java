@@ -1,8 +1,10 @@
 package edu.cornell.cs.apl.nativetools
 
 import edu.cornell.cs.apl.nativetools.templates.LibraryConstants
+import edu.cornell.cs.apl.nativetools.templates.Platform
 import edu.cornell.cs.apl.nativetools.templates.buildMakefile
 import edu.cornell.cs.apl.nativetools.templates.cmakeLists
+import edu.cornell.cs.apl.nativetools.templates.dependenciesMakefile
 import edu.cornell.cs.apl.nativetools.templates.dockerignore
 import edu.cornell.cs.apl.nativetools.templates.getMakefile
 import edu.cornell.cs.apl.nativetools.templates.linuxDockerfile
@@ -86,6 +88,7 @@ abstract class CollectLibraryTask : DefaultTask() {
 
         getMakefile.generate(constants, outputDirectory)
         swigMakefile.generate(constants, outputDirectory)
+        dependenciesMakefile.generate(constants, outputDirectory)
         buildMakefile.generate(constants, outputDirectory)
         cmakeLists.generate(constants, outputDirectory)
 
@@ -93,8 +96,12 @@ abstract class CollectLibraryTask : DefaultTask() {
         linuxDockerfile.generate(constants, outputDirectory)
         macosDockerfile.generate(constants, outputDirectory)
         dockerignore.generate(constants, outputDirectory)
-        outputDirectory.writeResource("profiles/x86_64-apple-darwin.cmake")
-        outputDirectory.writeResource("profiles/x86_64-apple-darwin.conan")
+
+        // Copy CMake and Conan profiles
+        Platform.values().forEach { platform ->
+            outputDirectory.writeResource(platform.cmakeProfileFile, skipIfMissing = true)
+            outputDirectory.writeResource(platform.conanProfileFile, skipIfMissing = true)
+        }
 
         project.copy {
             from(jniHeadersDirectory)
@@ -102,11 +109,17 @@ abstract class CollectLibraryTask : DefaultTask() {
         }
     }
 
-    /** Copies Java resource named [resource] into this directory. */
-    private fun Provider<Directory>.writeResource(resource: String) {
+    /**
+     * Copies Java resource named [resource] into this directory.
+     * @param skipIfMissing When set, does not raise an exception if the resource is missing.
+     */
+    private fun Provider<Directory>.writeResource(resource: String, skipIfMissing: Boolean = false) {
+        val resourceURL = CollectLibraryTask::class.java.getResource(resource)
+        if (skipIfMissing && resourceURL == null)
+            return
         val file = this.get().file(resource).asFile
         project.mkdir(file.parentFile)
-        file.writeBytes(CollectLibraryTask::class.java.getResource(resource).readBytes())
+        file.writeBytes(resourceURL.readBytes())
     }
 
     /** Copies [file] into this directory and renames it to [name]. */

@@ -36,15 +36,11 @@ internal val linuxDockerfile = Platform.LINUX_64.let { platform ->
     CMD ["/bin/bash"]
 
     ## Configure Conan
-    ENV PATH="/opt/python/cp35-cp35m/bin:${'$'}{PATH}"
+    ENV PATH="/opt/python/cp35-cp35m/bin:${'$'}PATH"
     RUN conan profile new --detect default \
         && conan profile update settings.compiler.libcxx=libstdc++11 default
 
     WORKDIR $dockerWorkDirectory
-
-    ## Install dependencies
-    COPY conanfile.* .
-    RUN conan install . --install-folder=$cmakeBuildDirectory --build=missing
 
     ${build.include(this)}
     """
@@ -63,38 +59,35 @@ internal val macosDockerfile = Platform.MACOS_64.let { platform ->
     ## Install dependencies
     RUN apt-get update && apt-get install -y --no-install-recommends \
         gettext-base \
-        m4 \
         && rm -rf /var/lib/apt/lists/*
 
     ## Install Conan
-    RUN wget --quiet https://dl.bintray.com/conan/installers/conan-ubuntu-64_1_31_4.deb -O conan.deb \
+    RUN wget --quiet https://dl.bintray.com/conan/installers/conan-ubuntu-64_1_33_1.deb -O conan.deb \
         && dpkg -i conan.deb \
         && rm conan.deb
+
+    ENV CROSS_TRIPLE=${platform.crossTriple}
+    # ENV MACOSX_DEPLOYMENT_TARGET=10.6
 
     ## Set environment variables
     SHELL ["/bin/sh", "-l", "-c"]
     ARG OSXCROSS_ENV=/root/.profile
     RUN osxcross-conf > ${'$'}OSXCROSS_ENV
-    RUN echo "export CROSS_TRIPLE=x86_64-apple-${'$'}OSXCROSS_TARGET" >> ${'$'}OSXCROSS_ENV
-    RUN echo "export CROSS_TOOLCHAIN=${'$'}OSXCROSS_CCTOOLS_PATH/${'$'}CROSS_TRIPLE" >> ${'$'}OSXCROSS_ENV
+    RUN echo "export CROSS_TOOLCHAIN=${'$'}OSXCROSS_CCTOOLS_PATH/x86_64-apple-${'$'}OSXCROSS_TARGET" >> ${'$'}OSXCROSS_ENV
     RUN echo ". ${'$'}OSXCROSS_ENV" > /root/.bashrc
 
     ## Configure Conan
-    ARG CONAN_PROFILE=/root/.conan/profiles/default
-    COPY profiles/x86_64-apple-darwin.conan ${'$'}CONAN_PROFILE-source
-    RUN envsubst < ${'$'}CONAN_PROFILE-source > ${'$'}CONAN_PROFILE \
-        && rm ${'$'}CONAN_PROFILE-source
+    RUN conan profile new --detect default
+    ARG CONAN_HOST_PROFILE=/root/.conan/profiles/${platform.crossTriple}
+    COPY ${platform.conanProfileFile} ${'$'}CONAN_HOST_PROFILE.source
+    RUN envsubst < ${'$'}CONAN_HOST_PROFILE.source > ${'$'}CONAN_HOST_PROFILE \
+        && rm ${'$'}CONAN_HOST_PROFILE.source
 
     ## Configure CMake
-    COPY profiles/x86_64-apple-darwin.cmake /root/Toolchain.cmake
+    COPY ${platform.cmakeProfileFile} /root/Toolchain.cmake
     ENV CMAKE_TOOLCHAIN_FILE=/root/Toolchain.cmake
 
     WORKDIR $dockerWorkDirectory
-    # ENV MACOSX_DEPLOYMENT_TARGET=10.6
-
-    ## Install dependencies
-    COPY conanfile.* .
-    RUN conan install . --install-folder=$cmakeBuildDirectory --build=b2 --build=missing
 
     ${build.include(this)}
     """
@@ -103,6 +96,10 @@ internal val macosDockerfile = Platform.MACOS_64.let { platform ->
 
 private val build = Template("build") {
     """
+    ## Install dependencies
+    COPY ${dependenciesMakefile.name} conanfile.* ./
+    RUN make -f ${dependenciesMakefile.name}
+
     ## Copy source code
     COPY --from=swig $dockerWorkDirectory/$patchedSourceDirectory/ $patchedSourceDirectory
 
