@@ -4,22 +4,45 @@ on: [ push, pull_request ]
 
 jobs:
   build:
-    name: build (${{ matrix.os }}, JDK ${{ matrix.java }})
+    runs-on: ubuntu-20.04
+
+    env:
+      JDK_VERSION: 11
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK ${{ env.JDK_VERSION }}
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ env.JDK_VERSION }}
+      - name: Generate classes and native binaries
+        uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: classes check -x test
+      - name: Upload generated files for other jobs
+        uses: actions/upload-artifact@v2
+        with:
+          name: ClassesAndResources
+          path: |
+            build/classes
+            build/resources
+
+  test:
+    name: test (${{ matrix.os }}, JDK ${{ matrix.java }})
+    needs: build
 
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
         os:
-          # - macos-10.15
-          # - macos-latest
+          - macos-10.15
           - ubuntu-16.04
           - ubuntu-18.04
           - ubuntu-20.04
-          - ubuntu-latest
         java:
           - 11
-          - 14
+          # - 14
 
     steps:
       - uses: actions/checkout@v2
@@ -27,9 +50,39 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java }}
-      - name: Build with Gradle
+      - name: Download generated files
+        uses: actions/download-artifact@v2
+        with:
+          name: ClassesAndResources
+          path: build
+      - name: Test with Gradle
         uses: eskatos/gradle-command-action@v1
         with:
-          arguments: build jacocoTestReport
-      # - name: Upload coverage to Codecov
-      #   uses: codecov/codecov-action@v1
+          arguments: -x classes test --tests=*AbyTest.constantGate
+
+  publish:
+    needs: test
+    if: github.event_name == 'push'
+
+    runs-on: ubuntu-20.04
+
+    env:
+      JDK_VERSION: 11
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK ${{ env.JDK_VERSION }}
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ env.JDK_VERSION }}
+      - name: Download generated files
+        uses: actions/download-artifact@v2
+        with:
+          name: ClassesAndResources
+          path: build
+      - name: Publish to GitHub Packages
+        uses: eskatos/gradle-command-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          arguments: -x classes publish

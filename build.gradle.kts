@@ -1,3 +1,4 @@
+import edu.cornell.cs.apl.nativetools.Library
 import org.gradle.api.JavaVersion.VERSION_1_8
 
 plugins {
@@ -7,7 +8,11 @@ plugins {
     // Style checking
     id("com.diffplug.spotless") version "5.1.0"
 
+    // Testing
     jacoco
+
+    // Generating Native Libraries
+    `swig-library`
 }
 
 val abyGroup: String by project
@@ -17,10 +22,6 @@ group = abyGroup
 
 version = abyVersion.substring(0..6)
 
-repositories {
-    jcenter()
-}
-
 /** Java Version */
 
 java {
@@ -29,8 +30,6 @@ java {
 }
 
 dependencies {
-    implementation("org.scijava:native-lib-loader:2.3.4")
-
     // Testing
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0-M1")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.7.0-M1")
@@ -47,9 +46,12 @@ dependencies {
 
 spotless {
     java {
-        val abyPath = "src/main/java/$group/aby".replace(".", "/")
-        targetExclude("$abyPath/*.java")
+        targetExclude("${project.relativePath(project.layout.buildDirectory)}/**/*.java")
         googleJavaFormat()
+    }
+
+    kotlinGradle {
+        ktlint()
     }
 }
 
@@ -71,8 +73,39 @@ tasks.jacocoTestReport {
 
 publishing {
     publications {
-        create<MavenPublication>("maven") {
+        create<MavenPublication>("default") {
             from(components["java"])
         }
     }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            version = System.getenv("GITHUB_SHA")
+            url = uri("https://maven.pkg.github.com/${System.getenv("GITHUB_REPOSITORY")}")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
+
+/** Building Native Binaries */
+
+swigLibrary {
+    libraries.add(
+        Library(
+            name = "ABY",
+            group = abyGroup,
+            version = abyVersion,
+            url = "https://github.com/apl-cornell/ABY",
+            submodules = listOf(
+                "extern/ENCRYPTO_utils",
+                "extern/ENCRYPTO_utils:extern/relic",
+                "extern/OTExtension"
+            ),
+            includeDirectories = listOf("src", "extern/ENCRYPTO_utils/src")
+        )
+    )
 }

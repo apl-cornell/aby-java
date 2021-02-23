@@ -1,0 +1,17 @@
+[settings]
+os=Macos
+arch=x86_64
+compiler=apple-clang
+compiler.version=10.0
+compiler.libcxx=libc++
+build_type=Release
+
+[env]
+AR=${CROSS_TOOLCHAIN}-ar
+AS=${CROSS_TOOLCHAIN}-as
+CC=${CROSS_TOOLCHAIN}-cc
+CXX=${CROSS_TOOLCHAIN}-c++
+NM=${CROSS_TOOLCHAIN}-nm
+RANLIB=${CROSS_TOOLCHAIN}-ranlib
+STRIP=${CROSS_TOOLCHAIN}-strip
+PKGCONFIG=${CROSS_TOOLCHAIN}-pkg-config
