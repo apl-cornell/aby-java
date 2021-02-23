@@ -36,7 +36,7 @@ internal val linuxDockerfile = Platform.LINUX_64.let { platform ->
     CMD ["/bin/bash"]
 
     ## Configure Conan
-    ENV PATH="/opt/python/cp38-cp38/bin:${'$'}{PATH}"
+    ENV PATH="/opt/python/cp38-cp38/bin:${'$'}PATH"
     RUN conan profile new --detect default \
         && conan profile update settings.compiler.libcxx=libstdc++11 default
 
