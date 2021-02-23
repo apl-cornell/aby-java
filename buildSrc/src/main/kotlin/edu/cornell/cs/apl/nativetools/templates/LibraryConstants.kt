@@ -3,6 +3,7 @@ package edu.cornell.cs.apl.nativetools.templates
 import edu.cornell.cs.apl.nativetools.Library
 import edu.cornell.cs.apl.nativetools.SwigLibraryPlugin
 import java.nio.file.Path
+import java.nio.file.Paths
 
 /** Provides constants that are used in [Template]s. */
 internal class LibraryConstants(val library: Library) {
@@ -71,6 +72,6 @@ internal class LibraryConstants(val library: Library) {
 
         /** Prints [path] using Unix separators. */
         fun unixPath(path: String): String =
-            Path.of(path).let { it.toString().replace(it.fileSystem.separator, "/") }
+            Paths.get(path).let { it.toString().replace(it.fileSystem.separator, "/") }
     }
 }
