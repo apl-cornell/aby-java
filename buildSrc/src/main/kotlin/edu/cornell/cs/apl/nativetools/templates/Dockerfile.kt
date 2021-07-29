@@ -62,7 +62,7 @@ internal val macosDockerfile = Platform.MACOS_64.let { platform ->
         && rm -rf /var/lib/apt/lists/*
 
     ## Install Conan
-    RUN wget --quiet https://dl.bintray.com/conan/installers/conan-ubuntu-64_1_33_1.deb -O conan.deb \
+    RUN wget --quiet https://github.com/conan-io/conan/releases/download/1.39.0/conan-ubuntu-64.deb -O conan.deb \
         && dpkg -i conan.deb \
         && rm conan.deb
 
