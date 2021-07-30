@@ -2,12 +2,14 @@ name: CI
 
 on: [ push, pull_request ]
 
+env:
+  JDK_DISTRIBUTION: zulu
+
 jobs:
   build:
     runs-on: ubuntu-20.04
 
     env:
-      JDK_DISTRIBUTION: zulu
       JDK_VERSION: 11
 
     steps:
