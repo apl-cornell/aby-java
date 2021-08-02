@@ -36,7 +36,7 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.2")
 
     // Logging during testing
-    testImplementation("org.slf4j:slf4j-simple:1.7.30")
+    testImplementation("org.slf4j:slf4j-simple:1.7.32")
 
     // Getting a free port
     testImplementation("org.springframework:spring-core:5.3.9")
