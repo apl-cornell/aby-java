@@ -4,13 +4,11 @@ on: [ push, pull_request ]
 
 env:
   JDK_DISTRIBUTION: zulu
+  JDK_VERSION: 11
 
 jobs:
   build:
     runs-on: ubuntu-20.04
-
-    env:
-      JDK_VERSION: 11
 
     steps:
       - uses: actions/checkout@v2
@@ -67,12 +65,9 @@ jobs:
 
   publish:
     needs: test
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
 
     runs-on: ubuntu-20.04
-
-    env:
-      JDK_VERSION: 11
 
     steps:
       - uses: actions/checkout@v2
