@@ -81,7 +81,8 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            version = System.getenv("GITHUB_REF")
+            val gitTag = System.getenv("GITHUB_REF")?.substringAfterLast('/')
+            if (gitTag != null) version = gitTag
             url = uri("https://maven.pkg.github.com/${System.getenv("GITHUB_REPOSITORY")}")
             credentials {
                 username = System.getenv("GITHUB_ACTOR")
