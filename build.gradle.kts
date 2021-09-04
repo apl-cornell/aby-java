@@ -97,7 +97,7 @@ swigLibrary {
     libraries.add(
         Library(
             name = "ABY",
-            group = abyGroup,
+            group = abyGroup.replace('-', '_'),
             version = abyVersion,
             url = "https://github.com/apl-cornell/ABY",
             submodules = listOf(

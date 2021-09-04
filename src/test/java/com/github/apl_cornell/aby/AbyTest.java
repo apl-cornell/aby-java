@@ -1,4 +1,4 @@
-package de.tu_darmstadt.cs.encrypto.aby;
+package com.github.apl_cornell.aby;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

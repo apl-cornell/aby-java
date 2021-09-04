@@ -1,4 +1,4 @@
-package de.tu_darmstadt.cs.encrypto.aby;
+package com.github.apl_cornell.aby;
 
 /**
  * A supertype for binary-gate adding methods such as {@link Circuit#putADDGate(Share, Share)} and
