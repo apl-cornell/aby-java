@@ -81,7 +81,7 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            version = System.getenv("GITHUB_SHA")
+            version = System.getenv("GITHUB_REF")
             url = uri("https://maven.pkg.github.com/${System.getenv("GITHUB_REPOSITORY")}")
             credentials {
                 username = System.getenv("GITHUB_ACTOR")
