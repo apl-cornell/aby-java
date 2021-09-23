@@ -17,6 +17,11 @@ plugins {
 
 group = "com.github.apl-cornell"
 
+// Compute version from GitHub tag if available
+System.getenv("GITHUB_REF")?.substringAfterLast('/')?.let { gitTag ->
+    version = gitTag
+}
+
 /** Java Version */
 
 java {
@@ -76,8 +81,6 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            val gitTag = System.getenv("GITHUB_REF")?.substringAfterLast('/')
-            if (gitTag != null) version = gitTag
             url = uri("https://maven.pkg.github.com/${System.getenv("GITHUB_REPOSITORY")}")
             credentials {
                 username = System.getenv("GITHUB_ACTOR")
