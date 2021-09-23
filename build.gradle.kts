@@ -15,12 +15,7 @@ plugins {
     `swig-library`
 }
 
-val abyGroup: String by project
-val abyVersion: String by project
-
-group = abyGroup
-
-version = abyVersion.substring(0..6)
+group = "com.github.apl-cornell"
 
 /** Java Version */
 
@@ -98,8 +93,8 @@ swigLibrary {
     libraries.add(
         Library(
             name = "ABY",
-            group = abyGroup.replace('-', '_'),
-            version = abyVersion,
+            group = (group as String).replace('-', '_'),
+            version = "e6f75f784af8a93e54a4d79a9cbd9e496065e77e",
             url = "https://github.com/apl-cornell/ABY",
             submodules = listOf(
                 "extern/ENCRYPTO_utils",
