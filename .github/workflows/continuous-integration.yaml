@@ -22,7 +22,7 @@ jobs:
           distribution: ${{ env.JDK_DISTRIBUTION }}
           java-version: ${{ env.JDK_VERSION }}
       - name: Generate classes and native binaries
-        uses: eskatos/gradle-command-action@v1
+        uses: eskatos/gradle-command-action@v2
         with:
           arguments: classes check -x test
       - name: Upload generated files for other jobs
@@ -62,7 +62,7 @@ jobs:
           name: ClassesAndResources
           path: build
       - name: Test with Gradle
-        uses: eskatos/gradle-command-action@v1
+        uses: eskatos/gradle-command-action@v2
         with:
           arguments: -x classes test --tests=*AbyTest.constantGate
 
@@ -85,7 +85,7 @@ jobs:
           name: ClassesAndResources
           path: build
       - name: Publish to GitHub Packages
-        uses: eskatos/gradle-command-action@v1
+        uses: eskatos/gradle-command-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
