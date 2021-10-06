@@ -32,7 +32,7 @@ internal val linuxDockerfile = Platform.LINUX_64.let { platform ->
     ${swigDockerfile.include(this)}
 
     # Build for Linux
-    FROM dockcross/manylinux2014-x64:20210210-84c47e5 as ${platform.safeName}
+    FROM dockcross/manylinux2014-x64:20211004-ae670cd as ${platform.safeName}
     CMD ["/bin/bash"]
 
     ## Configure Conan
@@ -62,7 +62,7 @@ internal val macosDockerfile = Platform.MACOS_64.let { platform ->
         && rm -rf /var/lib/apt/lists/*
 
     ## Install Conan
-    RUN wget --quiet https://github.com/conan-io/conan/releases/download/1.39.0/conan-ubuntu-64.deb -O conan.deb \
+    RUN wget --quiet https://github.com/conan-io/conan/releases/download/1.41.0/conan-ubuntu-64.deb -O conan.deb \
         && dpkg -i conan.deb \
         && rm conan.deb
 
