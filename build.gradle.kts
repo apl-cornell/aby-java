@@ -39,7 +39,7 @@ dependencies {
     testImplementation("org.slf4j:slf4j-simple:1.7.32")
 
     // Getting a free port
-    testImplementation("org.springframework:spring-core:5.3.11")
+    testImplementation("org.springframework:spring-core:5.3.12")
 }
 
 /** Style */
