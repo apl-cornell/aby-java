@@ -6,7 +6,7 @@ plugins {
     `maven-publish`
 
     // Style checking
-    id("com.diffplug.spotless") version "5.17.0"
+    id("com.diffplug.spotless") version "6.0.0"
 
     // Testing
     jacoco
