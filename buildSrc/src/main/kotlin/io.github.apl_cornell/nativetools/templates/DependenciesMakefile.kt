@@ -1,4 +1,4 @@
-package edu.cornell.cs.apl.nativetools.templates
+package io.github.apl_cornell.nativetools.templates
 
 /** Makefile for downloading and installing the dependencies. */
 internal val dependenciesMakefile = Makefile("dependencies.mk") {

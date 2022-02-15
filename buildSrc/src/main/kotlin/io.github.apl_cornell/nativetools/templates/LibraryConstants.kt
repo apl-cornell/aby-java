@@ -1,7 +1,7 @@
-package edu.cornell.cs.apl.nativetools.templates
+package io.github.apl_cornell.nativetools.templates
 
-import edu.cornell.cs.apl.nativetools.Library
-import edu.cornell.cs.apl.nativetools.SwigLibraryPlugin
+import io.github.apl_cornell.nativetools.Library
+import io.github.apl_cornell.nativetools.SwigLibraryPlugin
 import java.nio.file.Path
 import java.nio.file.Paths
 

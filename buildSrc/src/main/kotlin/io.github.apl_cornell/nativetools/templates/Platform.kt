@@ -1,4 +1,4 @@
-package edu.cornell.cs.apl.nativetools.templates
+package io.github.apl_cornell.nativetools.templates
 
 /** Platforms we can generate native binaries for. */
 internal enum class Platform {

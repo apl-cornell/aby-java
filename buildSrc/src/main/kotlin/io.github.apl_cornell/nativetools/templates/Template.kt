@@ -1,4 +1,4 @@
-package edu.cornell.cs.apl.nativetools.templates
+package io.github.apl_cornell.nativetools.templates
 
 import org.gradle.api.file.Directory
 import org.gradle.api.provider.Provider

@@ -1,7 +1,6 @@
-package edu.cornell.cs.apl.nativetools
+package io.github.apl_cornell.nativetools
 
 import de.undercouch.gradle.tasks.download.DownloadAction
-import java.io.File
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.Directory
 import org.gradle.api.provider.Provider
@@ -9,6 +8,7 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
+import java.io.File
 
 abstract class DownloadJNITask : DefaultTask() {
     @get:Internal

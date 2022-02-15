@@ -1,16 +1,16 @@
-package edu.cornell.cs.apl.nativetools
+package io.github.apl_cornell.nativetools
 
-import edu.cornell.cs.apl.nativetools.templates.LibraryConstants
-import edu.cornell.cs.apl.nativetools.templates.Platform
-import edu.cornell.cs.apl.nativetools.templates.buildMakefile
-import edu.cornell.cs.apl.nativetools.templates.cmakeLists
-import edu.cornell.cs.apl.nativetools.templates.dependenciesMakefile
-import edu.cornell.cs.apl.nativetools.templates.dockerignore
-import edu.cornell.cs.apl.nativetools.templates.getMakefile
-import edu.cornell.cs.apl.nativetools.templates.linuxDockerfile
-import edu.cornell.cs.apl.nativetools.templates.macosDockerfile
-import edu.cornell.cs.apl.nativetools.templates.swigDockerfile
-import edu.cornell.cs.apl.nativetools.templates.swigMakefile
+import io.github.apl_cornell.nativetools.templates.LibraryConstants
+import io.github.apl_cornell.nativetools.templates.Platform
+import io.github.apl_cornell.nativetools.templates.buildMakefile
+import io.github.apl_cornell.nativetools.templates.cmakeLists
+import io.github.apl_cornell.nativetools.templates.dependenciesMakefile
+import io.github.apl_cornell.nativetools.templates.dockerignore
+import io.github.apl_cornell.nativetools.templates.getMakefile
+import io.github.apl_cornell.nativetools.templates.linuxDockerfile
+import io.github.apl_cornell.nativetools.templates.macosDockerfile
+import io.github.apl_cornell.nativetools.templates.swigDockerfile
+import io.github.apl_cornell.nativetools.templates.swigMakefile
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
@@ -119,7 +119,7 @@ abstract class CollectLibraryTask : DefaultTask() {
             return
         val file = this.get().file(resource).asFile
         project.mkdir(file.parentFile)
-        file.writeBytes(resourceURL.readBytes())
+        file.writeBytes(resourceURL!!.readBytes())
     }
 
     /** Copies [file] into this directory and renames it to [name]. */

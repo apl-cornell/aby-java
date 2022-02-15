@@ -1,4 +1,4 @@
-package edu.cornell.cs.apl.nativetools
+package io.github.apl_cornell.nativetools
 
 import org.apache.tools.ant.util.TeeOutputStream
 import org.gradle.api.Project

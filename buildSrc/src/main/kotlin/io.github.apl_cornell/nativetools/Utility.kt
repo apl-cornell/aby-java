@@ -1,4 +1,4 @@
-package edu.cornell.cs.apl.nativetools
+package io.github.apl_cornell.nativetools
 
 import org.gradle.api.file.Directory
 import org.gradle.api.file.RegularFile

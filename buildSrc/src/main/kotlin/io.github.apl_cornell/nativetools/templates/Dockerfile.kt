@@ -1,4 +1,4 @@
-package edu.cornell.cs.apl.nativetools.templates
+package io.github.apl_cornell.nativetools.templates
 
 internal val swigDockerfile = Template("swig.dockerfile") {
     """

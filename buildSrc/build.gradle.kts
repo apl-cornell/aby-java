@@ -27,7 +27,7 @@ gradlePlugin {
     plugins {
         register("swig-library-plugin") {
             id = "swig-library"
-            implementationClass = "edu.cornell.cs.apl.nativetools.SwigLibraryPlugin"
+            implementationClass = "io.github.apl_cornell.nativetools.SwigLibraryPlugin"
         }
     }
 }

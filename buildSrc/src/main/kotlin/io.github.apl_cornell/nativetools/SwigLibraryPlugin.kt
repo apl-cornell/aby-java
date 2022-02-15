@@ -1,8 +1,7 @@
-package edu.cornell.cs.apl.nativetools
+package io.github.apl_cornell.nativetools
 
-import edu.cornell.cs.apl.nativetools.templates.LibraryConstants
-import edu.cornell.cs.apl.nativetools.templates.Platform
-import java.io.File
+import io.github.apl_cornell.nativetools.templates.LibraryConstants
+import io.github.apl_cornell.nativetools.templates.Platform
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.SourceSet
@@ -11,6 +10,7 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.register
+import java.io.File
 
 class SwigLibraryPlugin : Plugin<Project> {
     override fun apply(project: Project) {

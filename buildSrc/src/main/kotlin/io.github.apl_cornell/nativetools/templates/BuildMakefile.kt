@@ -1,4 +1,4 @@
-package edu.cornell.cs.apl.nativetools.templates
+package io.github.apl_cornell.nativetools.templates
 
 /** Makefile for building the library. */
 internal val buildMakefile = Makefile("build.mk") {

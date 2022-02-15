@@ -1,4 +1,4 @@
-package edu.cornell.cs.apl.nativetools.templates
+package io.github.apl_cornell.nativetools.templates
 
 /** Makefile for generating the Java interface using SWIG. */
 internal val swigMakefile = Makefile("swig.mk") {

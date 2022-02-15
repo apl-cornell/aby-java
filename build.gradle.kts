@@ -1,4 +1,4 @@
-import edu.cornell.cs.apl.nativetools.Library
+import io.github.apl_cornell.nativetools.Library
 import org.gradle.api.JavaVersion.VERSION_1_8
 
 plugins {
