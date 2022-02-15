@@ -1,5 +1,8 @@
 plugins {
     `kotlin-dsl`
+
+    // Style checking
+    id("com.diffplug.spotless") version "6.2.2"
 }
 
 repositories {
@@ -8,6 +11,16 @@ repositories {
 
 dependencies {
     implementation("de.undercouch:gradle-download-task:4.1.1")
+}
+
+spotless {
+    kotlin {
+        ktlint()
+    }
+
+    kotlinGradle {
+        ktlint()
+    }
 }
 
 gradlePlugin {
