@@ -1,4 +1,4 @@
-import edu.cornell.cs.apl.nativetools.Library
+import io.github.apl_cornell.nativetools.Library
 import org.gradle.api.JavaVersion.VERSION_1_8
 
 plugins {
@@ -15,7 +15,7 @@ plugins {
     `swig-library`
 }
 
-group = "com.github.apl-cornell"
+group = "io.github.apl-cornell"
 
 // Compute version from GitHub tag if available
 System.getenv("GITHUB_REF")?.substringAfterLast('/')?.let { gitTag ->
