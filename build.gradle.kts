@@ -15,7 +15,7 @@ plugins {
     `swig-library`
 }
 
-group = "com.github.apl-cornell"
+group = "io.github.apl-cornell"
 
 // Compute version from GitHub tag if available
 System.getenv("GITHUB_REF")?.substringAfterLast('/')?.let { gitTag ->

@@ -1,4 +1,4 @@
-package com.github.apl_cornell.aby;
+package io.github.apl_cornell.aby;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

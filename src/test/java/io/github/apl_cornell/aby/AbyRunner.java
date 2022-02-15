@@ -1,4 +1,4 @@
-package com.github.apl_cornell.aby;
+package io.github.apl_cornell.aby;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
