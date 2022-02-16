@@ -5,6 +5,9 @@ plugins {
     `java-library`
     `maven-publish`
 
+    // Versioning
+    id("pl.allegro.tech.build.axion-release") version "1.13.6"
+
     // Style checking
     id("com.diffplug.spotless") version "6.2.2"
 
@@ -17,10 +20,9 @@ plugins {
 
 group = "io.github.apl-cornell"
 
-// Compute version from GitHub tag if available
-System.getenv("GITHUB_REF")?.substringAfterLast('/')?.let { gitTag ->
-    version = gitTag
-}
+// Compute version from source control
+scmVersion.tag.prefix = ""
+version = scmVersion.version
 
 /** Java Version */
 
