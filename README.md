@@ -45,4 +45,9 @@ information.
 
 ABY Java is based on the
 fork [apl-cornell/ABY](https://github.com/apl-cornell/ABY). You can contribute
-to that repository if you need to make changes to ABY source code.
+to that repository if you need to make changes to ABY source code. You need to
+update the version of ABY specified in [build.gradle.kts](build.gradle.kts)
+if you do.
+
+After making changes, create a new release on GitHub. This will build and
+publish a new version of the library.
