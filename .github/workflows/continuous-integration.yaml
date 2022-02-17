@@ -21,6 +21,8 @@ jobs:
         with:
           distribution: ${{ env.JDK_DISTRIBUTION }}
           java-version: ${{ env.JDK_VERSION }}
+      - uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true
       - name: Generate classes and native binaries
         uses: gradle/gradle-build-action@v2
         with:
