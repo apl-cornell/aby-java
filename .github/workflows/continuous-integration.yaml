@@ -68,7 +68,6 @@ jobs:
 
   publish:
     needs: test
-    if: github.event_name == 'release'
 
     runs-on: ubuntu-20.04
 
@@ -89,7 +88,7 @@ jobs:
       - name: Publish to GitHub Packages and Maven Central
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: -x classes publish
+          arguments: ${{ github.event_name == 'release' || '--dry-run' }} -x classes publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.ORG_GRADLE_PROJECT_SONATYPEUSERNAME }}
