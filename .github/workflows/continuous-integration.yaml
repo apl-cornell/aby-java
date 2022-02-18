@@ -92,7 +92,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: >
-            ${{ github.event_name == 'release' || '--dry-run' }}
+            ${{ github.event_name != 'release' && '--dry-run' || '' }}
             -x classes -x javadocJar -x sourcesJar
             publish closeSonatypeStagingRepository
         env:
