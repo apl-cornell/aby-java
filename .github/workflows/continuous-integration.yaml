@@ -16,6 +16,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # Fetch history and tags; necessary for computing project version.
       - name: Set up JDK ${{ env.JDK_VERSION }}
         uses: actions/setup-java@v2
         with:
@@ -24,13 +26,14 @@ jobs:
       - name: Generate classes and native binaries
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: classes check -x test
+          arguments: classes check javadocJar sourcesJar -x test
       - name: Upload generated files for other jobs
         uses: actions/upload-artifact@v2
         with:
           name: ClassesAndResources
           path: |
             build/classes
+            build/libs
             build/resources
 
   test:
@@ -68,7 +71,6 @@ jobs:
 
   publish:
     needs: test
-    if: github.event_name == 'release'
 
     runs-on: ubuntu-20.04
 
@@ -86,9 +88,16 @@ jobs:
         with:
           name: ClassesAndResources
           path: build
-      - name: Publish to GitHub Packages
+      - name: Publish to GitHub Packages and Maven Central
         uses: gradle/gradle-build-action@v2
+        with:
+          arguments: >
+            ${{ github.event_name == 'release' || '--dry-run' }}
+            -x classes -x javadocJar -x sourcesJar
+            publish closeSonatypeStagingRepository
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          arguments: -x classes publish
+          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.ORG_GRADLE_PROJECT_SONATYPEUSERNAME }}
+          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.ORG_GRADLE_PROJECT_SONATYPEPASSWORD }}
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGKEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGPASSWORD }}
