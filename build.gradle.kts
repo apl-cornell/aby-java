@@ -108,7 +108,7 @@ publishing {
             from(components["java"])
 
             pom {
-                name.set("$groupId.$artifactId")
+                name.set("ABY Java")
                 description.set("Java bindings for the ABY framework.")
                 url.set("https://$repositoryUrl")
 
