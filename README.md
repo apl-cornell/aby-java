@@ -8,6 +8,24 @@ the library extracts the correct binary based on the system. This allows you to
 use ABY as any other Maven dependency, completely ignoring the fact that the
 framework is implemented in C++.
 
+## Installation
+
+This library is distributed through [Maven Central][maven-central].
+
+### Gradle
+
+```kotlin
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation("io.github.apl-cornell:aby-java:<version>")
+}
+```
+
+[maven-central]: https://search.maven.org/artifact/io.github.apl-cornell/aby-java
+
 ## Supported Platforms
 
 We currently build native libraries for macOS and Linux. ABY (transitively)
