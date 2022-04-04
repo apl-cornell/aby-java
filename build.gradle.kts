@@ -13,7 +13,7 @@ plugins {
     id("pl.allegro.tech.build.axion-release") version "1.13.6"
 
     // Style checking
-    id("com.diffplug.spotless") version "6.3.0"
+    id("com.diffplug.spotless") version "6.4.1"
 
     // Testing
     jacoco
