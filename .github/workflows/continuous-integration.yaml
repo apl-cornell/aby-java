@@ -28,7 +28,7 @@ jobs:
         with:
           arguments: classes check javadocJar sourcesJar -x test
       - name: Upload generated files for other jobs
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ClassesAndResources
           path: |
