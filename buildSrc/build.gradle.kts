@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    implementation("de.undercouch:gradle-download-task:4.1.1")
+    implementation("de.undercouch:gradle-download-task:5.3.1")
 }
 
 spotless {
