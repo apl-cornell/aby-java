@@ -2,7 +2,7 @@ plugins {
     `kotlin-dsl`
 
     // Style checking
-    id("com.diffplug.spotless") version "6.2.2"
+    id("com.diffplug.spotless") version "6.17.0"
 }
 
 repositories {
