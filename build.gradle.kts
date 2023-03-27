@@ -10,7 +10,7 @@ plugins {
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
 
     // Versioning
-    id("pl.allegro.tech.build.axion-release") version "1.13.6"
+    id("pl.allegro.tech.build.axion-release") version "1.15.0"
 
     // Style checking
     id("com.diffplug.spotless") version "6.4.1"
